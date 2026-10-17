@@ -23,7 +23,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="h-full bg-[#F8FAFC] text-slate-900 antialiased overflow-hidden font-sans">
+      <body className="min-h-full bg-[#F8FAFC] text-slate-900 antialiased font-sans">
         <Suspense fallback={<div className="h-full w-full bg-[#F8FAFC]" />}>
           <AppShell>{children}</AppShell>
         </Suspense>
