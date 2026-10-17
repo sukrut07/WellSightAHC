@@ -1,0 +1,6 @@
+id,well_id,event_type,occurred_at,volume_barrels,substance,reported_to_regulator,reported_at,regulator_agency,investigation_notes,source_file
+REG-2026-0001,WELL-0001,Spill,2026-06-10T08:00:00,8.5,Crude Oil,true,2026-06-11T16:30:00,State Oil & Gas Conservation Commission,Transfer line flange gasket failure; reported 32.5 hours post-incident,regulator_events_q2_2026.csv
+REG-2026-0002,WELL-0003,Spill,2026-07-04T12:00:00,14.0,Produced Water,true,2026-07-04T22:15:00,State Oil & Gas Conservation Commission,Separator dump valve stuck open; reported promptly in 10.25 hours,regulator_events_q3_2026.csv
+REG-2026-0003,WELL-0004,Spill,2026-07-18T14:00:00,3.2,Crude Oil,false,,State Oil & Gas Conservation Commission,Stuffing box packing drip captured in catch basin under 5 bbl threshold,regulator_events_q3_2026.csv
+REG-2026-0004,WELL-0007,Spill,2026-08-01T09:30:00,6.4,Condensate,true,,State Oil & Gas Conservation Commission,Scrubber high-level switch failed; initial call logged but dispatch timestamp missing,regulator_events_q3_2026.csv
+REG-2026-0005,WELL-0006,Spill,2026-08-15T10:00:00,5.8,Crude Oil,true,2026-08-16T14:00:00,State Oil & Gas Conservation Commission,Flowline pinhole leak; reported at 28 hours (subject to engineering survey correction),regulator_events_q3_2026.csv

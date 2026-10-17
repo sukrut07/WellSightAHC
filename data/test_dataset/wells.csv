@@ -1,0 +1,4 @@
+id,name,area,field,well_type,target_formation,latitude,longitude,commissioned_date,status
+TEST-WELL-0101,Horizon Discovery 101,Area Delta,Delaware Basin,Gas Lift,Bone Spring,31.7820,-103.3200,2024-01-10,Active
+TEST-WELL-0102,Horizon Discovery 102,Area Delta,Delaware Basin,Electric Submersible Pump,Wolfcamp A,31.7850,-103.3250,2024-02-15,Active
+TEST-WELL-0103,Horizon Discovery 103,Area Delta,Delaware Basin,Rod Pump,Spraberry,31.7890,-103.3300,2023-11-20,Active

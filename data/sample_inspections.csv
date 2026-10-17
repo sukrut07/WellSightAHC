@@ -1,0 +1,28 @@
+id,well_id,inspection_date,inspector,ambient_temp_f,wellhead_temp_f,surface_pressure_psi,flow_line_pressure_psi,observed_production_status,is_missed,notes,source_file,import_batch
+INSP-2026-0001,WELL-0001,2026-06-01,D. Vance,88.5,115.0,320,110,Producing,false,Normal flow line pressure,inspections_june_2026.csv,batch_01
+INSP-2026-0002,WELL-0001,2026-06-08,D. Vance,91.0,118.2,325,112,Producing,false,Gas injection stable at 450 MCFD,inspections_june_2026.csv,batch_01
+INSP-2026-0003,WELL-0001,2026-06-15,D. Vance,93.0,121.0,318,108,Producing,false,Operating as expected,inspections_june_2026.csv,batch_01
+INSP-2026-0004,WELL-0001,2026-08-03,D. Vance,93.0,102.0,140,45,Not Producing,false,Low temperature differential 9F vs 15F threshold,inspections_aug_2026.csv,batch_03
+INSP-2026-0005,WELL-0001,2026-08-10,D. Vance,95.0,124.0,330,115,Producing,false,Resumed production following valve reseat,inspections_aug_2026.csv,batch_03
+INSP-2026-0006,WELL-0002,2026-06-01,M. Chen,89.0,116.5,310,105,Producing,false,Steady gas circulation,inspections_june_2026.csv,batch_01
+INSP-2026-0007,WELL-0002,2026-07-20,M. Chen,94.0,94.0,0,0,Missed Inspection,true,Road washout prevented route access,inspections_july_2026.csv,batch_02
+INSP-2026-0008,WELL-0002,2026-07-27,M. Chen,96.0,122.0,315,108,Producing,false,Access restored; wellhead active,inspections_july_2026.csv,batch_02
+INSP-2026-0009,WELL-0003,2026-07-06,D. Vance,95.0,132.0,410,180,Producing,false,ESP operating at 55 Hz,inspections_july_2026.csv,batch_02
+INSP-2026-0010,WELL-0003,2026-07-13,D. Vance,96.0,110.0,210,60,Not Producing,false,Delta 14F below 25F ESP threshold; motor overload,inspections_july_2026.csv,batch_02
+INSP-2026-0011,WELL-0003,2026-07-20,D. Vance,98.0,112.0,205,58,Not Producing,false,Consecutive check: Delta 14F below 25F; motor locked,inspections_july_2026.csv,batch_02
+INSP-2026-0012,WELL-0003,2026-07-27,D. Vance,95.0,131.0,415,182,Producing,false,Downhole motor reset and back on-line,inspections_july_2026.csv,batch_02
+INSP-2026-0013,WELL-0004,2026-07-15,M. Chen,94.0,98.0,85,30,Planned Maintenance,false,Approved scheduled overhaul permit PM-892,inspections_july_2026.csv,batch_02
+INSP-2026-0014,WELL-0004,2026-07-22,M. Chen,95.0,114.0,240,90,Producing,false,Returned to production,inspections_july_2026.csv,batch_02
+INSP-2026-0015,WELL-0007,2026-06-01,D. Vance,88.0,116.0,340,115,Producing,false,Operating stably,inspections_june_2026.csv,batch_01
+INSP-2026-0016,WELL-0007,2026-06-08,D. Vance,90.0,117.5,335,114,Producing,false,Flow rate normal,inspections_june_2026.csv,batch_01
+INSP-2026-0017,WELL-0007,2026-06-15,D. Vance,92.0,99.0,160,40,Not Producing,false,Delta 7F below 15F threshold; gas lift valve stuck,inspections_june_2026.csv,batch_01
+INSP-2026-0018,WELL-0007,2026-06-22,D. Vance,94.0,101.0,155,38,Not Producing,false,Consecutive non-producing: Delta 7F below 15F threshold,inspections_june_2026.csv,batch_01
+INSP-2026-0019,WELL-0007,2026-06-29,D. Vance,93.0,120.0,335,112,Producing,false,Temporary nitrogen blowback successful,inspections_june_2026.csv,batch_01
+INSP-2026-0020,WELL-0007,2026-07-06,D. Vance,95.0,100.0,150,35,Not Producing,false,Delta 5F below 15F threshold; orifice scale plugged,inspections_july_2026.csv,batch_02
+INSP-2026-0021,WELL-0007,2026-07-13,D. Vance,97.0,123.0,345,118,Producing,false,Wireline slickline trip completed,inspections_july_2026.csv,batch_02
+INSP-2026-0022,WELL-0005,2026-06-10,R. Garza,91.0,105.0,200,50,Not Producing,false,Area B ESP Delta 14F below 25F threshold,inspections_june_2026.csv,batch_01
+INSP-2026-0023,WELL-0005,2026-06-17,R. Garza,92.0,128.0,420,185,Producing,false,Area B ESP back online,inspections_june_2026.csv,batch_01
+INSP-2026-0024,WELL-0009,2026-07-08,R. Garza,93.0,100.0,110,35,Not Producing,false,Area B Rod Pump Delta 7F below 12F threshold,inspections_july_2026.csv,batch_02
+INSP-2026-0025,WELL-0009,2026-07-15,R. Garza,95.0,118.0,230,85,Producing,false,Area B Rod Pump pumpjack motor replaced,inspections_july_2026.csv,batch_02
+INSP-2026-0026,WELL-0011,2026-08-05,K. Patel,92.0,102.0,180,55,Not Producing,false,Area C Flowing Well Delta 10F below 18F threshold,inspections_aug_2026.csv,batch_03
+INSP-2026-0027,WELL-0011,2026-08-12,K. Patel,94.0,124.0,360,130,Producing,false,Area C Flowing Well cleared hydrate blockage,inspections_aug_2026.csv,batch_03

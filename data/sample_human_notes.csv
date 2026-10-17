@@ -1,0 +1,6 @@
+id,well_id,author,created_at,category,content
+NOTE-001,WELL-0007,D. Vance,2026-06-16T09:00:00,Operational,Gas lift compressor discharge line had severe vibration before the June 15 shutdown. Possible valve orifice restriction.
+NOTE-002,WELL-0003,C. Alvarez,2026-07-13T11:30:00,Equipment,Substation transformer T-4 experienced voltage sags during lightning storm on July 12 causing ESP VFD drive trip.
+NOTE-003,WELL-0001,M. Chen,2026-08-03T16:00:00,Operational,Area A gathering header backpressure spiked to 140 psi during midstream plant maintenance.
+NOTE-004,WELL-0002,M. Chen,2026-07-21T08:00:00,Logistics,Culvert collapse on lease access road prevented routine pumper inspection on July 20. Road repaired July 25.
+NOTE-005,WELL-0006,R. Garza,2026-08-16T09:15:00,Environmental,Vacuum truck recovered 4.2 bbl of emulsion from secondary containment berm. HSE review underway.

@@ -1,0 +1,13 @@
+id,name,area,field,well_type,target_formation,latitude,longitude,commissioned_date,status
+WELL-0001,Pinnacle Unit 101,Area A,Midland Basin,Gas Lift,Wolfcamp A,31.9686,-102.0778,2022-03-15,Active
+WELL-0002,Pinnacle Unit 102,Area A,Midland Basin,Gas Lift,Wolfcamp A,31.9712,-102.0811,2022-04-10,Active
+WELL-0003,Crestview 03,Area A,Midland Basin,Electric Submersible Pump,Bone Spring,31.9540,-102.0620,2021-11-01,Active
+WELL-0004,Crestview 04,Area A,Midland Basin,Rod Pump,Spraberry,31.9515,-102.0655,2020-08-20,Active
+WELL-0005,Apache Ridge 05,Area B,Delaware Basin,Electric Submersible Pump,Wolfcamp B,31.8420,-103.2105,2023-01-18,Active
+WELL-0006,Apache Ridge 06,Area B,Delaware Basin,Gas Lift,Wolfcamp B,31.8465,-103.2150,2023-02-22,Active
+WELL-0007,Eagle Eye 07,Area A,Midland Basin,Gas Lift,Wolfcamp A,31.9820,-102.0950,2022-09-05,Active
+WELL-0008,Eagle Eye 08,Area A,Midland Basin,Flowing,Upper Penn,31.9855,-102.0988,2024-05-12,Active
+WELL-0009,Mesa Grande 09,Area B,Delaware Basin,Rod Pump,Bone Spring,31.8310,-103.1950,2021-06-14,Active
+WELL-0010,Mesa Grande 10,Area B,Delaware Basin,Gas Lift,Wolfcamp A,31.8350,-103.1990,2022-07-30,Active
+WELL-0011,Falcon Pass 11,Area C,Central Basin,Flowing,Clear Fork,32.2150,-102.5100,2023-10-04,Active
+WELL-0012,Falcon Pass 12,Area C,Central Basin,Rod Pump,San Andres,32.2190,-102.5145,2019-12-08,Active

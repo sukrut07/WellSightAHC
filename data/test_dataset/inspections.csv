@@ -1,0 +1,5 @@
+id,well_id,inspection_date,inspector,ambient_temp_f,wellhead_temp_f,surface_pressure_psi,flow_line_pressure_psi,observed_production_status,is_missed,notes,source_file,import_batch
+TEST-INSP-001,TEST-WELL-0101,2026-09-07,T. Clark,90.0,98.0,150,40,Not Producing,false,Gas Lift Delta 8F below 15F threshold,test_inspections.csv,test_batch_01
+TEST-INSP-002,TEST-WELL-0101,2026-09-14,T. Clark,92.0,100.0,145,38,Not Producing,false,Consecutive: Delta 8F below 15F threshold,test_inspections.csv,test_batch_01
+TEST-INSP-003,TEST-WELL-0102,2026-09-07,T. Clark,90.0,126.0,400,175,Producing,false,ESP running within normal range,test_inspections.csv,test_batch_01
+TEST-INSP-004,TEST-WELL-0103,2026-09-07,T. Clark,91.0,108.0,220,80,Producing,false,Rod pump pumping unit normal,test_inspections.csv,test_batch_01

@@ -1,0 +1,2 @@
+id,well_id,start_date,end_date,repair_type,cause_category,documented_cause,cost_usd,technician,status,source_file
+TEST-REP-001,TEST-WELL-0101,2026-09-08,2026-09-12,Choke Box Rebuild,Mechanical Failure,Debris intrusion in surface choke,6500.00,T. Clark,Completed,test_repairs.csv

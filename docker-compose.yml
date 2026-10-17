@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: wellsight-db
+    environment:
+      POSTGRES_USER: wellsight
+      POSTGRES_PASSWORD: wellsight_secure_pass
+      POSTGRES_DB: wellsight_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U wellsight -d wellsight_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: services/api/Dockerfile
+    container_name: wellsight-api
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://wellsight:wellsight_secure_pass@db:5432/wellsight_db
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      AI_PROVIDER: ${AI_PROVIDER:-auto}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+
+  web:
+    build:
+      context: apps/web
+      dockerfile: Dockerfile
+    container_name: wellsight-web
+    depends_on:
+      - api
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000/api
+    ports:
+      - "3000:3000"
+
+volumes:
+  pgdata:

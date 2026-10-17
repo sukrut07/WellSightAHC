@@ -1,0 +1,9 @@
+id,well_id,start_date,end_date,repair_type,cause_category,documented_cause,cost_usd,technician,status,source_file
+REP-2026-0041,WELL-0007,2026-06-16,2026-06-20,Gas Lift Valve Replacement,Mechanical Failure,Gas lift valve 3 seat eroded by sand particles from Wolfcamp formation,14500.00,T. Reynolds,Completed,repairs_q2_2026.csv
+REP-2026-0042,WELL-0007,2026-07-07,2026-07-09,Wireline Scale Milling,Paraffin / Scale,Barium sulfate scale deposition restricted injection orifice,8200.00,T. Reynolds,Completed,repairs_q3_2026.csv
+REP-2026-0043,WELL-0003,2026-07-14,2026-07-25,ESP Downhole Motor Overhaul,Electrical Fault,Downhole power cable dielectric breakdown caused by thermal spike,42500.00,C. Alvarez,Completed,repairs_q3_2026.csv
+REP-2026-0044,WELL-0001,2026-08-04,2026-08-06,Gas Lift Orifice Calibration,Pressure Drop,Injection choke orifice clogged by pipe corrosion rust flakes,4800.00,J. Scott,Completed,repairs_q3_2026.csv
+REP-2026-0045,WELL-0005,2026-06-11,2026-06-15,VFD Drive Inverter Swap,Electrical Fault,Surface variable frequency drive phase module failure,18200.00,C. Alvarez,Completed,repairs_q2_2026.csv
+REP-2026-0046,WELL-0009,2026-07-09,2026-07-12,Rod String Replacement,Mechanical Failure,Grade D sucker rod parted at 4200 ft due to cyclic fatigue,11900.00,E. Morales,Completed,repairs_q3_2026.csv
+REP-2026-0047,WELL-0011,2026-08-06,2026-08-09,Methanol Hydrate Flush,Flowline Obstruction,Methane gas hydrate crystal plug in surface manifold,6400.00,E. Morales,Completed,repairs_q3_2026.csv
+REP-2026-0048,WELL-0004,2026-07-15,2026-07-18,Scheduled Gearbox Overhaul,Planned Maintenance,Preventive gearbox bearing renewal under PM-892,5300.00,T. Reynolds,Completed,repairs_q3_2026.csv

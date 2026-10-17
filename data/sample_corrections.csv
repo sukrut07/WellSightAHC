@@ -1,0 +1,5 @@
+id,scope,target_id,target_field,original_value,corrected_value,author,created_at,reason,status
+CORR-2026-0001,record,REG-2026-0005,volume_barrels,5.8,4.2,Sarah Jenkins (Lead Environmental Engineer),2026-08-17T14:30:00,Post-incident calibrated vacuum truck recovery volume established true loss at 4.2 bbl below reportable 5.0 bbl threshold,Accepted
+CORR-2026-0002,well,WELL-0007,target_formation,Wolfcamp A,Wolfcamp Lower B,Carlos Mendez (Subsurface Geologist),2026-07-02T10:00:00,Re-logged gamma ray log confirmed perforation depth falls into Lower B interval,Accepted
+CORR-2026-0003,record,INSP-2026-0017,observed_production_status,Not Producing,Producing,Contract Pumper B,2026-06-25T11:00:00,Claimed flare was burning so well was assumed active,Contested
+CORR-2026-0004,well_type,Gas Lift,standard_temperature_threshold_f,15.0,15.0,Operations Committee,2026-05-01T09:00:00,Re-affirmed 15.0F threshold for Midland Basin summer conditions,Accepted
