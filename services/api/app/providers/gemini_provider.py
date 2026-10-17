@@ -16,13 +16,31 @@ class GeminiProvider(BaseLLMProvider):
         self.fallback = DeterministicProvider()
 
     def get_api_key(self) -> str:
-        return (
+        key = (
             os.getenv("GEMINI_API_KEY") 
             or os.getenv("GOOGLE_API_KEY") 
             or os.getenv("GEMMA_API_KEY") 
-            or settings.GEMINI_API_KEY 
-            or ""
+            or getattr(settings, "GEMINI_API_KEY", "")
         )
+        if not key:
+            from pathlib import Path
+            from app.core.config import BASE_DIR
+            for p in [BASE_DIR / ".env", BASE_DIR.parent / ".env", Path.cwd() / ".env"]:
+                if p.exists():
+                    try:
+                        with open(p, "r", encoding="utf-8") as f:
+                            for line in f:
+                                line = line.strip()
+                                if line and not line.startswith("#") and "=" in line:
+                                    k, v = line.split("=", 1)
+                                    k = k.strip()
+                                    v = v.strip().strip("'\"")
+                                    if k in ["GEMINI_API_KEY", "GOOGLE_API_KEY", "GEMMA_API_KEY"] and v:
+                                        os.environ[k] = v
+                                        return v
+                    except Exception:
+                        pass
+        return key or ""
 
     def get_preferred_models(self) -> List[str]:
         configured = (

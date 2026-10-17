@@ -9,12 +9,18 @@ from app.models.chat import Conversation, Message
 from app.models.audit import AuditEvent
 from app.schemas.copilot import ChatRequest, ChatResponse
 
+import os
+
 class AgentOrchestrator:
     def __init__(self):
-        if settings.AI_PROVIDER == "gemini" or (settings.AI_PROVIDER == "auto" and settings.GEMINI_API_KEY):
-            self.provider = GeminiProvider()
-        else:
-            self.provider = DeterministicProvider()
+        self.gemini_provider = GeminiProvider()
+        self.deterministic_provider = DeterministicProvider()
+
+    def get_provider(self):
+        mode = os.getenv("AI_PROVIDER", getattr(settings, "AI_PROVIDER", "auto"))
+        if mode == "deterministic":
+            return self.deterministic_provider
+        return self.gemini_provider
 
     async def handle_message(self, db: Session, request: ChatRequest) -> ChatResponse:
         # 1. Resolve or create conversation
@@ -56,7 +62,8 @@ class AgentOrchestrator:
 
         # 3. Process via provider with tools & generative UI
         request.conversation_id = conv_id
-        response = await self.provider.process_query(db, request)
+        provider = self.get_provider()
+        response = await provider.process_query(db, request)
 
         # 4. Record assistant message in database
         vis_json = response.visualization.model_dump_json() if response.visualization else None

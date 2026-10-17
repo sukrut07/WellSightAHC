@@ -14,15 +14,15 @@ import {
   Check,
   Edit3,
   Terminal,
-  Paperclip,
-  Download,
+  Zap,
+  ArrowRight,
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { api } from '@/lib/api';
 import { GenerativeUIRenderer } from '@/components/generative-ui/GenerativeUIRenderer';
 import { EvidenceDrawer } from '@/components/EvidenceDrawer';
 import { CorrectionModal } from '@/components/CorrectionModal';
-import { CopilotMessage, VisualSpecUnion, CitationSource, ConflictNotice } from '@/types/generative-ui';
+import { CopilotMessage, CitationSource } from '@/types/generative-ui';
 
 function CopilotChatContent() {
   const searchParams = useSearchParams();
@@ -34,8 +34,8 @@ function CopilotChatContent() {
       role: 'assistant',
       content:
         "Hello! I am **WellSight AI**, your Asset Intelligence Copilot for Permian Basin operations.\n\n" +
-        "I can investigate well performance, calculate exact downtime using thermal differential rules, audit 24-hour spill reporting compliance, check documented repair causes, and surface data discrepancies.\n\n" +
-        "Try asking one of the operational questions below or type your own question:",
+        "I am connected to your live operational database with deterministic tool-calling, thermal differential rules, 24-hour spill compliance tracking, and Google Gemini reasoning.\n\n" +
+        "Try asking one of the verified operational questions below or type your inquiry:",
       created_at: new Date().toISOString(),
     },
   ]);
@@ -53,7 +53,6 @@ function CopilotChatContent() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Read active user from localStorage if available
     const saved = localStorage.getItem('wellsight_active_user');
     if (saved) setActiveUser(saved);
 
@@ -119,7 +118,6 @@ function CopilotChatContent() {
     }
   };
 
-  // Handle URL query parameter launch
   useEffect(() => {
     if (initialQuery && messages.length === 1) {
       handleSendMessage(initialQuery);
@@ -148,22 +146,26 @@ function CopilotChatContent() {
   ];
 
   return (
-    <div className="flex h-full flex-col bg-[#070D19] relative">
-      {/* Top Header */}
-      <header className="flex flex-wrap items-center justify-between border-b border-slate-800 bg-[#0A1224] px-6 py-3 shrink-0">
+    <div className="flex h-full flex-col bg-[#070D19] relative overflow-hidden text-slate-100">
+      {/* Background ambient lighting */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-indigo-900/15 via-transparent to-transparent" />
+
+      {/* 1. Header Bar */}
+      <header className="relative z-10 flex flex-wrap items-center justify-between border-b border-slate-800/80 bg-[#0A1224]/90 px-6 py-3.5 backdrop-blur-md shrink-0">
         <div className="flex items-center gap-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-950 border border-emerald-800 text-emerald-400">
-            <Bot className="h-4 w-4" />
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 border border-emerald-500/40 text-emerald-400 shadow-sm shadow-emerald-500/10">
+            <Bot className="h-5 w-5" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <h2 className="text-sm font-bold text-white">Asset Intelligence Copilot</h2>
-              <span className="rounded bg-sky-950 border border-sky-800 px-1.5 py-0.2 font-mono text-[10px] text-sky-400">
-                Agentic Grounded Tools
+            <div className="flex items-center gap-2.5">
+              <h2 className="text-sm font-extrabold tracking-tight text-white">Asset Intelligence Copilot</h2>
+              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-950/70 border border-emerald-500/30 px-2 py-0.5 font-mono text-[10px] font-bold text-emerald-400">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                Gemini Orchestrator
               </span>
             </div>
-            <p className="text-[11px] text-slate-400 font-mono">
-              Active Context User: <span className="text-slate-200 font-bold">{activeUser}</span>
+            <p className="text-[11px] text-slate-400 font-mono mt-0.5">
+              Active Context User: <span className="text-emerald-400 font-bold">{activeUser}</span> · Permian Asset Fleet
             </p>
           </div>
         </div>
@@ -174,7 +176,7 @@ function CopilotChatContent() {
               setCorrectionTargetId('INSP-2026-0017');
               setCorrectionModalOpen(true);
             }}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800/80 hover:bg-slate-700 px-3 py-1.5 text-xs font-medium text-slate-200 transition-colors"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-slate-700/80 bg-slate-800/70 hover:bg-slate-700 hover:border-slate-600 px-3 py-1.5 text-xs font-semibold text-slate-200 transition-all shadow-xs cursor-pointer active:scale-95"
           >
             <Edit3 className="h-3.5 w-3.5 text-emerald-400" /> Submit Correction
           </button>
@@ -183,56 +185,90 @@ function CopilotChatContent() {
               setMessages(messages.slice(0, 1));
               setConversationId(null);
             }}
-            className="inline-flex items-center gap-1 rounded-xl border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 shadow-xs transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-slate-700/80 bg-slate-800/70 hover:bg-slate-700 hover:border-slate-600 px-2.5 py-1.5 text-xs font-semibold text-slate-300 hover:text-white transition-all shadow-xs cursor-pointer active:scale-95"
             title="Reset conversation"
           >
-            <RotateCcw className="h-3.5 w-3.5" />
+            <RotateCcw className="h-3.5 w-3.5 text-slate-400" />
+            <span className="hidden sm:inline">Reset</span>
           </button>
         </div>
       </header>
 
-      {/* Messages Scroll Area */}
-      <div className="flex-1 overflow-y-auto px-4 py-6 md:px-8 space-y-6">
+      {/* 2. Messages Stream */}
+      <div className="relative z-10 flex-1 overflow-y-auto px-4 py-6 md:px-8 space-y-6">
         <div className="max-w-4xl mx-auto space-y-6">
           {messages.map((m) => (
             <div
               key={m.id}
-              className={`flex gap-3 ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}
+              className={`flex gap-3.5 ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               {m.role === 'assistant' && (
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-emerald-500 text-white shadow-sm">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-emerald-500 text-white shadow-md shadow-indigo-500/20">
                   <Bot className="h-4 w-4" />
                 </div>
               )}
 
               <div
-                className={`max-w-3xl rounded-2xl p-4.5 text-xs leading-relaxed shadow-sm ${
+                className={`max-w-3xl rounded-2xl p-5 text-xs leading-relaxed transition-all shadow-lg ${
                   m.role === 'user'
-                    ? 'bg-slate-900 text-white rounded-tr-none'
-                    : 'bg-white/90 border border-slate-200/90 text-slate-800 rounded-tl-none backdrop-blur-xl shadow-md'
+                    ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white rounded-tr-none shadow-indigo-600/25'
+                    : 'bg-[#0E1626]/90 border border-slate-800/90 hover:border-slate-700/80 text-slate-100 rounded-tl-none backdrop-blur-xl shadow-black/40'
                 }`}
               >
-                {/* Assistant Tools Execution Badge */}
+                {/* Assistant Top Metadata & Tools Trace */}
+                {m.role === 'assistant' && (
+                  <div className="mb-3.5 flex items-center justify-between border-b border-slate-800/80 pb-2.5 text-[11px]">
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-white tracking-wide">WellSight Intelligence</span>
+                      <span className="rounded bg-indigo-950/70 border border-indigo-700/50 px-1.5 py-0.2 font-mono text-[9px] text-indigo-300">
+                        Verified Facts
+                      </span>
+                    </div>
+
+                    <button
+                      onClick={() => handleCopy(m.id, m.content)}
+                      className="inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] text-slate-400 hover:text-white transition-colors cursor-pointer"
+                      title="Copy response text"
+                    >
+                      {copiedId === m.id ? (
+                        <>
+                          <Check className="h-3 w-3 text-emerald-400" />
+                          <span className="text-emerald-400">Copied</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="h-3 w-3" />
+                          <span>Copy</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                )}
+
+                {/* Executed Tools Badge */}
                 {m.tool_calls && m.tool_calls.length > 0 && (
-                  <div className="mb-3 flex flex-wrap items-center gap-2 rounded-lg bg-slate-50 border border-slate-200 px-2.5 py-1.5 text-[11px] font-mono text-slate-600">
-                    <Terminal className="h-3.5 w-3.5 text-indigo-600" />
-                    <span className="font-semibold">Executed Tools:</span>
+                  <div className="mb-3.5 flex flex-wrap items-center gap-2 rounded-xl bg-slate-950/80 border border-slate-800 px-3 py-2 text-[11px] font-mono text-slate-300">
+                    <Terminal className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
+                    <span className="font-semibold text-slate-400">Agentic Tools:</span>
                     {m.tool_calls.map((t: any, idx: number) => (
-                      <span key={idx} className="rounded bg-indigo-50 border border-indigo-200 px-1.5 py-0.5 text-indigo-700 font-bold">
-                        {t.tool_name} ({t.execution_time_ms ? `${Math.round(t.execution_time_ms)}ms` : 'ok'})
+                      <span
+                        key={idx}
+                        className="rounded-md bg-emerald-950/60 border border-emerald-800/50 px-2 py-0.5 text-emerald-300 font-semibold text-[10px]"
+                      >
+                        {t.tool_name} {t.execution_time_ms ? `(${Math.round(t.execution_time_ms)}ms)` : ''}
                       </span>
                     ))}
                   </div>
                 )}
 
                 {/* Markdown Text Response */}
-                <div className="prose prose-slate prose-xs max-w-none space-y-2 text-slate-700">
+                <div className="prose prose-invert prose-xs max-w-none space-y-2 text-slate-200 leading-relaxed font-sans">
                   <ReactMarkdown>{m.content}</ReactMarkdown>
                 </div>
 
                 {/* Generative UI Component */}
                 {m.visualization && (
-                  <div className="mt-4">
+                  <div className="mt-4 pt-3 border-t border-slate-800/70">
                     <GenerativeUIRenderer
                       spec={m.visualization}
                       onCitationClick={handleCitationClick}
@@ -241,67 +277,62 @@ function CopilotChatContent() {
                   </div>
                 )}
 
+                {/* Conflicts & Uncertainty Callout */}
+                {m.conflicts && m.conflicts.length > 0 && (
+                  <div className="mt-3.5 rounded-xl border border-amber-500/30 bg-amber-950/20 p-3 text-amber-200">
+                    <div className="flex items-center gap-2 font-bold text-xs text-amber-300 mb-1">
+                      <AlertTriangle className="h-3.5 w-3.5" />
+                      <span>Data Conflict / Inconsistency Detected</span>
+                    </div>
+                    {m.conflicts.map((c: any, i: number) => (
+                      <p key={i} className="text-[11px] text-amber-200/90">
+                        {c.description || c.title || JSON.stringify(c)}
+                      </p>
+                    ))}
+                  </div>
+                )}
+
                 {/* Ground Citations Pills */}
                 {m.sources && m.sources.length > 0 && (
-                  <div className="mt-3 flex flex-wrap items-center gap-1.5 border-t border-slate-800/70 pt-2.5">
-                    <span className="text-[10px] font-medium text-slate-400 flex items-center gap-1">
+                  <div className="mt-3.5 flex flex-wrap items-center gap-1.5 border-t border-slate-800/80 pt-3">
+                    <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-1 mr-1">
                       <ShieldCheck className="h-3 w-3 text-emerald-400" /> Evidence Citing:
                     </span>
                     {m.sources.map((src, idx) => (
                       <button
                         key={idx}
                         onClick={() => handleCitationClick(src.record_id)}
-                        className="rounded bg-slate-800/90 hover:bg-sky-950/70 hover:text-sky-300 border border-slate-700/60 px-2 py-0.5 font-mono text-[10px] text-slate-300 transition-colors"
-                        title={src.title}
+                        className="inline-flex items-center gap-1 rounded-lg border border-slate-700/80 bg-slate-800/80 hover:bg-slate-700 px-2 py-0.5 font-mono text-[10px] text-emerald-400 transition-colors cursor-pointer"
+                        title={src.title || src.record_id}
                       >
-                        {src.record_id}
-                      </button>
-                    ))}
-                  </div>
-                )}
-
-                {/* Action Bar */}
-                {m.role === 'assistant' && m.id !== 'welcome' && (
-                  <div className="mt-3 flex items-center justify-between border-t border-slate-800/60 pt-2 text-[10px] text-slate-500">
-                    <span className="font-mono">Audited Output</span>
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => handleCopy(m.id, m.content)}
-                        className="flex items-center gap-1 hover:text-slate-300 transition-colors"
-                        title="Copy answer"
-                      >
-                        {copiedId === m.id ? (
-                          <>
-                            <Check className="h-3 w-3 text-emerald-400" /> Copied
-                          </>
-                        ) : (
-                          <>
-                            <Copy className="h-3 w-3" /> Copy
-                          </>
+                        <span>{src.record_id}</span>
+                        {src.source_type && (
+                          <span className="text-slate-400 font-sans text-[9px] capitalize">
+                            · {src.source_type}
+                          </span>
                         )}
                       </button>
-                    </div>
+                    ))}
                   </div>
                 )}
               </div>
 
               {m.role === 'user' && (
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-sky-950 border border-sky-800 text-sky-400">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-slate-800 border border-slate-700 text-slate-300 shadow-sm">
                   <User className="h-4 w-4" />
                 </div>
               )}
             </div>
           ))}
 
-          {/* Loading Indicator */}
           {loading && (
-            <div className="flex gap-3 items-center text-xs text-slate-400 font-mono">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-emerald-950 border border-emerald-800 text-emerald-400 animate-pulse">
+            <div className="flex items-center gap-3">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-emerald-500 text-white animate-pulse">
                 <Bot className="h-4 w-4" />
               </div>
-              <div className="flex items-center gap-2 rounded-xl border border-slate-800 bg-[#0E1626] px-4 py-3 text-slate-300">
+              <div className="flex items-center gap-2.5 rounded-2xl border border-slate-800 bg-[#0E1626]/90 px-4 py-3 text-xs text-slate-300 shadow-lg">
                 <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
-                <span>Orchestrating tools, evaluating business rules & generating evidence UI...</span>
+                <span>Orchestrating agentic tools, evaluating domain rules & synthesizing Gemini response...</span>
               </div>
             </div>
           )}
@@ -310,44 +341,47 @@ function CopilotChatContent() {
         </div>
       </div>
 
-      {/* Suggested Followups & Input Box */}
-      <div className="border-t border-slate-800 bg-[#0A1224] p-4 shrink-0">
+      {/* 3. Followups & Input Box */}
+      <div className="relative z-10 border-t border-slate-800/80 bg-[#0A1224]/95 p-4 shrink-0 backdrop-blur-md">
         <div className="max-w-4xl mx-auto space-y-3">
-          {/* Quick Prompt Pills */}
+          {/* Quick Prompt Pills with smooth horizontal scrolling */}
           <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs no-scrollbar">
-            <span className="text-[11px] text-slate-500 shrink-0 font-medium">Quick Prompts:</span>
+            <span className="text-[11px] text-slate-400 shrink-0 font-bold uppercase tracking-wider flex items-center gap-1">
+              <Sparkles className="h-3 w-3 text-amber-400" /> Prompts:
+            </span>
             {sampleQuestions.map((q, idx) => (
               <button
                 key={idx}
                 onClick={() => handleSendMessage(q)}
-                className="shrink-0 rounded-xl border border-slate-200 bg-white/90 px-3 py-1.5 text-[11px] font-semibold text-slate-700 hover:border-indigo-300 hover:bg-indigo-50/50 hover:text-indigo-700 transition-all shadow-xs cursor-pointer"
+                className="shrink-0 rounded-full border border-slate-700/80 bg-[#0E1626]/90 hover:bg-[#16223B] hover:border-indigo-400/50 px-3.5 py-1.5 text-[11px] font-medium text-slate-300 hover:text-white transition-all shadow-sm cursor-pointer active:scale-95"
               >
                 {q}
               </button>
             ))}
           </div>
 
-          {/* Form */}
+          {/* Input Form */}
           <form
             onSubmit={(e) => {
               e.preventDefault();
               handleSendMessage();
             }}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2.5 rounded-2xl border border-slate-700/80 bg-[#0E1626]/90 p-1.5 pl-4 shadow-2xl focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/20 transition-all"
           >
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Ask about well downtime, 24h spill rules, temperature deltas, repairs, or submit corrections..."
-              className="flex-1 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/10 shadow-sm"
+              className="flex-1 bg-transparent text-xs sm:text-sm text-white placeholder-slate-400 focus:outline-none"
             />
             <button
               type="submit"
               disabled={loading || !input.trim()}
-              className="flex items-center justify-center rounded-xl bg-indigo-600 hover:bg-indigo-700 px-4 py-2.5 text-xs font-bold text-white shadow-md shadow-indigo-500/20 disabled:opacity-50 transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 px-4 py-2.5 text-xs font-bold text-slate-950 shadow-md shadow-emerald-500/20 disabled:opacity-40 transition-all cursor-pointer active:scale-95"
             >
-              <Send className="h-4 w-4" />
+              <span>Send</span>
+              <Send className="h-3.5 w-3.5" />
             </button>
           </form>
         </div>
