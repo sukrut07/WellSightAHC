@@ -38,13 +38,15 @@ def run_compliance_audit():
         print("[CHECK 1] Thermal Differential Limits by Well Type")
         t200_thresh = DEFAULT_TEMP_THRESHOLDS.get("T200")
         t350_thresh = DEFAULT_TEMP_THRESHOLDS.get("T350")
+        t500_thresh = DEFAULT_TEMP_THRESHOLDS.get("T500")
         gas_thresh = DEFAULT_TEMP_THRESHOLDS.get("Gas Lift")
         esp_thresh = DEFAULT_TEMP_THRESHOLDS.get("ESP")
         assert t200_thresh == 15.0, f"Expected T200=15.0, got {t200_thresh}"
         assert t350_thresh == 20.0, f"Expected T350=20.0, got {t350_thresh}"
+        assert t500_thresh == 25.0, f"Expected T500=25.0, got {t500_thresh}"
         assert gas_thresh == 15.0, f"Expected Gas Lift=15.0, got {gas_thresh}"
         assert esp_thresh == 25.0, f"Expected ESP=25.0, got {esp_thresh}"
-        print(f"  ✓ T200 threshold: {t200_thresh}°C | T350 threshold: {t350_thresh}°C | Gas Lift: {gas_thresh}°F | ESP: {esp_thresh}°F")
+        print(f"  ✓ T200: {t200_thresh}°C | T350: {t350_thresh}°C | T500: {t500_thresh}°C | Gas Lift: {gas_thresh}°F | ESP: {esp_thresh}°F")
         checks_passed += 1
 
         # Check 2: Deterministic Downtime Math (7d / 14d / 0d missed)

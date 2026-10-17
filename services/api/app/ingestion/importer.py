@@ -15,6 +15,7 @@ from app.models.human_note import HumanNote
 from app.models.document import Document, DocumentChunk
 from app.models.correction import Correction
 from app.models.audit import IngestionJob
+from app.services.downtime_engine import DEFAULT_TEMP_THRESHOLDS
 
 class DataImporter:
     @classmethod
@@ -493,7 +494,7 @@ class DataImporter:
                             existing_i = db.query(Inspection).filter(Inspection.id == iid).first()
                             amb = float(irow.get("ambient_temp_c", 0.0))
                             wh = float(irow.get("wellhead_temp_c", 0.0))
-                            thresh = 15.0 if well_type == "T200" else 20.0
+                            thresh = DEFAULT_TEMP_THRESHOLDS.get(well_type, 15.0)
                             is_prod = (wh - amb) >= thresh
                             status_str = "Producing" if is_prod else "Not Producing"
 
@@ -621,15 +622,18 @@ class DataImporter:
                             cid = crow.get("note_id")
                             if not cid:
                                 continue
-                            if crow.get("note_type") == "correction":
+                            if crow.get("note_type") in ["correction", "data_correction"]:
                                 if not db.query(Correction).filter(Correction.id == cid).first():
+                                    t_field = crow.get("field", "observed_production_status")
+                                    orig_val = str(crow.get("original_value", "Spill / Non-Producing"))
+                                    corr_val = str(crow.get("corrected_value", "Produced Water / Producing"))
                                     corr = Correction(
                                         id=cid,
                                         scope="record",
                                         target_id=crow.get("inspection_id", well_id),
-                                        target_field="observed_production_status",
-                                        original_value="Spill / Non-Producing",
-                                        corrected_value="Produced Water / Producing",
+                                        target_field=t_field,
+                                        original_value=orig_val,
+                                        corrected_value=corr_val,
                                         author=crow.get("author_user_id", "Field Lead"),
                                         reason=crow.get("text", "Field inspection correction"),
                                         status="Accepted"

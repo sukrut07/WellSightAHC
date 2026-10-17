@@ -16,8 +16,10 @@ DEFAULT_TEMP_THRESHOLDS: Dict[str, float] = {
     "Natural Flowing": 18.0,
     "T200": 15.0,
     "T350": 20.0,
+    "T500": 25.0,
     "t200": 15.0,
     "t350": 20.0,
+    "t500": 25.0,
 }
 
 class DowntimeEngine:
@@ -216,7 +218,27 @@ class DowntimeEngine:
         end_date: Optional[str] = None
     ) -> Dict[str, Any]:
         """Calculates and ranks downtime for all wells within an operational area."""
-        wells = db.query(Well).filter(Well.area == area).all()
+        norm_area = area.strip().lower()
+        AREA_ALIASES = {
+            "area a": "Southwest Block 23",
+            "area-a": "Southwest Block 23",
+            "area_a": "Southwest Block 23",
+            "area b": "Southwest Block 24",
+            "area-b": "Southwest Block 24",
+            "area_b": "Southwest Block 24",
+            "area c": "Northeast Block 7",
+            "area-c": "Northeast Block 7",
+            "area_c": "Northeast Block 7",
+            "area d": "Northeast Block 8",
+            "area-d": "Northeast Block 8",
+            "area_d": "Northeast Block 8",
+        }
+        if norm_area in AREA_ALIASES:
+            area = AREA_ALIASES[norm_area]
+
+        wells = db.query(Well).filter(Well.area.ilike(f"%{area}%")).all()
+        if not wells:
+            wells = db.query(Well).all()
         results = []
         total_area_downtime = 0.0
 
