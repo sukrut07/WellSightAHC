@@ -27,6 +27,7 @@ import {
   ShieldAlert,
 } from 'lucide-react';
 import { ConnectivityTree } from '@/components/landing/ConnectivityTree';
+import { WellSightLogo } from '@/components/WellSightLogo';
 
 // Lazy load 3D hero canvas to ensure zero initial load penalty
 const Hero3DCanvas = dynamic(
@@ -53,20 +54,7 @@ export default function LandingPage() {
       <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/85 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           {/* Logo & Product Identity */}
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-emerald-500 text-white group-hover:scale-105 transition-transform shadow-md shadow-indigo-500/20">
-              <Flame className="h-5 w-5" />
-            </div>
-            <div>
-              <div className="text-sm font-bold tracking-tight text-slate-900 flex items-center gap-1.5">
-                WellSight AI
-                <span className="rounded-md bg-indigo-50 border border-indigo-200 px-1.5 py-0.2 text-[9px] font-mono font-semibold text-indigo-700">
-                  2026
-                </span>
-              </div>
-              <p className="text-[10px] text-slate-500 font-medium">Asset Intelligence Copilot</p>
-            </div>
-          </Link>
+          <WellSightLogo href="/dashboard" theme="light" badge="2026" />
 
           {/* Desktop Links */}
           <nav className="hidden md:flex items-center gap-7 text-xs font-semibold text-slate-600">

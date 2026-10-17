@@ -48,7 +48,7 @@ export const RippleDotBackground: React.FC<RippleDotBackgroundProps> = ({
       prevY: -1000,
     };
 
-    const spacing = 32; // Dot grid spacing
+    const spacing = 34; // Subtle dot grid spacing
     let dots: Dot[] = [];
 
     const initDots = () => {
@@ -61,8 +61,8 @@ export const RippleDotBackground: React.FC<RippleDotBackgroundProps> = ({
           const baseX = c * spacing;
           const baseY = r * spacing;
 
-          // Subtle variation in base dot alpha
-          const baseAlpha = theme === 'light' ? 0.22 : 0.16;
+          // Dimmed, elegant dot opacity for understated editorial luxury
+          const baseAlpha = theme === 'light' ? 0.055 : 0.04;
           dots.push({
             baseX,
             baseY,
@@ -70,10 +70,11 @@ export const RippleDotBackground: React.FC<RippleDotBackgroundProps> = ({
             y: baseY,
             vx: 0,
             vy: 0,
-            radius: 1.5,
+            radius: 1.1,
             baseAlpha,
             alpha: baseAlpha,
-            color: theme === 'light' ? '99, 102, 241' : '0, 212, 161', // Indigo in light, Emerald in dark
+            // Softer neutral slate-400 in light mode to avoid high contrast glare
+            color: theme === 'light' ? '148, 163, 184' : '74, 222, 128',
           });
         }
       }
@@ -121,8 +122,8 @@ export const RippleDotBackground: React.FC<RippleDotBackgroundProps> = ({
 
       ctx.clearRect(0, 0, width, height);
 
-      const rippleRadius = 140; // Area of effect
-      const pushStrength = 22; // Physical displacement strength
+      const rippleRadius = 130; // Area of effect
+      const pushStrength = 18; // Soft physical displacement
       const springK = 0.08; // Spring return force
       const friction = 0.82; // Physics dampening
 
@@ -140,19 +141,19 @@ export const RippleDotBackground: React.FC<RippleDotBackgroundProps> = ({
           const angle = Math.atan2(dy, dx);
 
           // Displace outward with smooth wave oscillation
-          const wave = Math.sin(dist * 0.12 - time * 6) * factor * 4;
+          const wave = Math.sin(dist * 0.12 - time * 6) * factor * 3.5;
           const force = (factor * pushStrength + wave);
 
-          d.vx += Math.cos(angle) * force * 0.25;
-          d.vy += Math.sin(angle) * force * 0.25;
+          d.vx += Math.cos(angle) * force * 0.22;
+          d.vy += Math.sin(angle) * force * 0.22;
 
-          // Brighten and scale dot near cursor
-          d.alpha = Math.min(0.9, d.baseAlpha + factor * 0.65);
-          d.radius = 1.5 + factor * 2.2;
+          // Restrained highlight near cursor (capped at 0.24 to keep subtle)
+          d.alpha = Math.min(0.24, d.baseAlpha + factor * 0.18);
+          d.radius = 1.1 + factor * 1.1;
         } else {
-          // Gentle ambient drift
+          // Gentle ambient drift back to base
           d.alpha += (d.baseAlpha - d.alpha) * 0.08;
-          d.radius += (1.5 - d.radius) * 0.08;
+          d.radius += (1.1 - d.radius) * 0.08;
         }
 
         // 3. Spring physics: return to (baseX, baseY)
@@ -166,13 +167,13 @@ export const RippleDotBackground: React.FC<RippleDotBackgroundProps> = ({
         d.y += d.vy;
 
         // 4. Subtle ambient breathing oscillation
-        const ambientWave = Math.sin(time + (d.baseX + d.baseY) * 0.005) * 0.4;
-        const renderRadius = Math.max(0.8, d.radius + ambientWave * 0.2);
+        const ambientWave = Math.sin(time + (d.baseX + d.baseY) * 0.005) * 0.3;
+        const renderRadius = Math.max(0.6, d.radius + ambientWave * 0.15);
 
         // Draw dot
         ctx.beginPath();
         ctx.arc(d.x, d.y, renderRadius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${d.color}, ${Math.max(0.04, d.alpha)})`;
+        ctx.fillStyle = `rgba(${d.color}, ${Math.max(0.02, d.alpha)})`;
         ctx.fill();
       }
 
@@ -193,7 +194,7 @@ export const RippleDotBackground: React.FC<RippleDotBackgroundProps> = ({
     <canvas
       ref={canvasRef}
       className={`fixed inset-0 pointer-events-none z-0 ${className}`}
-      style={{ opacity: 0.95 }}
+      style={{ opacity: 0.6 }}
     />
   );
 };

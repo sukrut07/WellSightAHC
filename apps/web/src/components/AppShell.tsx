@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { api } from '@/lib/api';
 import { RippleDotBackground } from './RippleDotBackground';
+import { WellSightLogo } from './WellSightLogo';
 
 interface AppShellProps {
   children: React.ReactNode;
@@ -90,27 +91,12 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
         <div>
           {/* Logo & Product Identity */}
           <div className="flex items-center justify-between pb-4 border-b border-slate-800/80">
-            <Link href="/dashboard" className="flex items-center gap-2.5 overflow-hidden">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-emerald-500 text-white shadow-md shadow-indigo-500/20">
-                <Flame className="h-5 w-5" />
-              </div>
-              {!isCollapsed && (
-                <div className="truncate">
-                  <div className="text-sm font-bold tracking-tight text-white flex items-center gap-1.5">
-                    WellSight AI
-                    <span className="rounded-md bg-indigo-500/20 border border-indigo-400/30 px-1.5 py-0.2 text-[9px] font-mono font-semibold text-indigo-300">
-                      v2.4
-                    </span>
-                  </div>
-                  <p className="text-[10px] text-slate-400 font-medium truncate">Asset Intelligence Copilot</p>
-                </div>
-              )}
-            </Link>
+            <WellSightLogo collapsed={isCollapsed} href="/dashboard" badge="v2.4" />
 
             {/* Collapse / Expand Toggle Button */}
             <button
               onClick={() => setIsCollapsed(!isCollapsed)}
-              className="hidden lg:flex p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/60 transition-colors"
+              className="hidden lg:flex p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/60 transition-colors shrink-0"
               title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
               aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
             >
@@ -227,13 +213,8 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
       </aside>
 
       {/* 2. Mobile Top Navigation Bar */}
-      <div className="md:hidden fixed top-0 left-0 right-0 z-40 flex items-center justify-between border-b border-slate-200 bg-white/90 backdrop-blur-md px-4 py-3">
-        <Link href="/dashboard" className="flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-600 text-white">
-            <Flame className="h-4 w-4" />
-          </div>
-          <span className="font-extrabold text-slate-900 text-sm">WellSight AI</span>
-        </Link>
+      <div className="md:hidden fixed top-0 left-0 right-0 z-40 flex items-center justify-between border-b border-slate-200 bg-white/90 backdrop-blur-md px-4 py-2.5">
+        <WellSightLogo collapsed={false} href="/dashboard" />
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           className="rounded-lg p-1 text-slate-600 hover:text-slate-900"
