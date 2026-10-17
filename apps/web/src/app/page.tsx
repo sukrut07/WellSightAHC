@@ -8,23 +8,11 @@ import {
   Flame,
   ArrowRight,
   Bot,
-  Database,
   BarChart3,
   ShieldCheck,
   FileCheck2,
-  Cpu,
-  Layers,
-  ChevronRight,
-  ExternalLink,
-  Sparkles,
-  GitMerge,
-  Search,
-  CheckCircle2,
   Menu,
   X,
-  Radio,
-  ArrowUpRight,
-  ShieldAlert,
 } from 'lucide-react';
 import { ConnectivityTree } from '@/components/landing/ConnectivityTree';
 import { WellSightLogo } from '@/components/WellSightLogo';
@@ -149,7 +137,12 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             {/* Left Column: Plain-language Value Proposition */}
-            <div className="lg:col-span-7 space-y-6">
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+              className="lg:col-span-7 space-y-6"
+            >
               {/* Eyebrow */}
               <div className="inline-flex items-center gap-2 rounded-full border border-indigo-200 bg-indigo-50 px-3.5 py-1 text-[11px] font-mono text-indigo-700 font-bold shadow-xs">
                 <span className="h-1.5 w-1.5 rounded-full bg-indigo-600 animate-ping" />
@@ -204,22 +197,33 @@ export default function LandingPage() {
                   <div className="text-[11px] text-slate-500 font-medium">Clickable Citations</div>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
             {/* Right Column: 3D Hero Focal Point */}
-            <div className="lg:col-span-5 relative">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.7, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+              className="lg:col-span-5 relative"
+            >
               <div className="relative rounded-2xl border border-slate-200/90 bg-white/80 p-3 shadow-xl backdrop-blur-xl">
                 <Hero3DCanvas />
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* 3. Feature Summary: 4 Clean Pastel Editorial Cards (Inspired by Reference 2) */}
+      {/* 3. Feature Summary: 4 Clean Pastel Editorial Cards with Scroll Entrance */}
       <section id="features" className="py-20 border-t border-slate-200/80 bg-slate-50/60">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          <div className="max-w-2xl">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-50px' }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            className="max-w-2xl"
+          >
             <span className="text-[11px] font-mono uppercase tracking-wider text-indigo-600 font-bold">
               Engineered For Industrial Reality
             </span>
@@ -229,11 +233,18 @@ export default function LandingPage() {
             <p className="text-sm text-slate-600 mt-2">
               Oilfield operations cannot rely on probabilistic text completion alone. WellSight AI couples natural-language reasoning with verified calculation engines.
             </p>
-          </div>
+          </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Feature 1 */}
-            <div className="rounded-2xl border border-[#E9D5FF] bg-gradient-to-br from-[#F5F3FF] to-white p-6 space-y-3 shadow-sm hover:shadow-md transition-all">
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-50px' }}
+              transition={{ duration: 0.5, delay: 0.05 }}
+              whileHover={{ y: -4, transition: { duration: 0.2 } }}
+              className="rounded-2xl border border-[#E9D5FF] bg-gradient-to-br from-[#F5F3FF] to-white p-6 space-y-3 shadow-sm hover:shadow-md transition-shadow"
+            >
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-100 text-purple-700">
                 <Bot className="h-5 w-5" />
               </div>
@@ -241,10 +252,17 @@ export default function LandingPage() {
               <p className="text-xs text-slate-600 leading-relaxed">
                 Query well histories, downtime rankings, and repair records using natural language. No SQL or syntax mastery required.
               </p>
-            </div>
+            </motion.div>
 
             {/* Feature 2 */}
-            <div className="rounded-2xl border border-[#BAE6FD] bg-gradient-to-br from-[#F0F9FF] to-white p-6 space-y-3 shadow-sm hover:shadow-md transition-all">
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-50px' }}
+              transition={{ duration: 0.5, delay: 0.15 }}
+              whileHover={{ y: -4, transition: { duration: 0.2 } }}
+              className="rounded-2xl border border-[#BAE6FD] bg-gradient-to-br from-[#F0F9FF] to-white p-6 space-y-3 shadow-sm hover:shadow-md transition-shadow"
+            >
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-sky-100 text-sky-700">
                 <FileCheck2 className="h-5 w-5" />
               </div>
@@ -252,10 +270,17 @@ export default function LandingPage() {
               <p className="text-xs text-slate-600 leading-relaxed">
                 Every factual claim provides clickable badges linking to underlying inspection IDs, repair logs, or SOP manual sections.
               </p>
-            </div>
+            </motion.div>
 
             {/* Feature 3 */}
-            <div className="rounded-2xl border border-[#A7F3D0] bg-gradient-to-br from-[#ECFDF5] to-white p-6 space-y-3 shadow-sm hover:shadow-md transition-all">
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-50px' }}
+              transition={{ duration: 0.5, delay: 0.25 }}
+              whileHover={{ y: -4, transition: { duration: 0.2 } }}
+              className="rounded-2xl border border-[#A7F3D0] bg-gradient-to-br from-[#ECFDF5] to-white p-6 space-y-3 shadow-sm hover:shadow-md transition-shadow"
+            >
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">
                 <BarChart3 className="h-5 w-5" />
               </div>
@@ -263,10 +288,17 @@ export default function LandingPage() {
               <p className="text-xs text-slate-600 leading-relaxed">
                 Evaluates the 7-day non-producing inspection rule and thermal lift thresholds (T200 15°C, T350 20°C, Gas Lift 15°F) deterministically.
               </p>
-            </div>
+            </motion.div>
 
             {/* Feature 4 */}
-            <div className="rounded-2xl border border-[#FDE68A] bg-gradient-to-br from-[#FFFBEB] to-white p-6 space-y-3 shadow-sm hover:shadow-md transition-all">
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-50px' }}
+              transition={{ duration: 0.5, delay: 0.35 }}
+              whileHover={{ y: -4, transition: { duration: 0.2 } }}
+              className="rounded-2xl border border-[#FDE68A] bg-gradient-to-br from-[#FFFBEB] to-white p-6 space-y-3 shadow-sm hover:shadow-md transition-shadow"
+            >
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-100 text-amber-700">
                 <ShieldCheck className="h-5 w-5" />
               </div>
@@ -274,15 +306,21 @@ export default function LandingPage() {
               <p className="text-xs text-slate-600 leading-relaxed">
                 Sensor recalibrations update subsequent math without destroying raw records. Missing dispatch timestamps are surfaced honestly.
               </p>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* 4. Interactive Generative UI Live Preview */}
+      {/* 4. Interactive Generative UI Live Preview with Scroll Entrance */}
       <section id="preview" className="py-20 border-t border-slate-200/80 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-50px' }}
+            transition={{ duration: 0.5 }}
+            className="flex flex-col sm:flex-row sm:items-end justify-between gap-4"
+          >
             <div>
               <span className="text-[11px] font-mono uppercase tracking-wider text-indigo-600 font-bold">
                 Dynamic Generative Interface
@@ -298,10 +336,16 @@ export default function LandingPage() {
               <span className="h-2 w-2 rounded-full bg-emerald-500" />
               Generative Visual Preview
             </span>
-          </div>
+          </motion.div>
 
           {/* Interactive Chat & Visual Preview Card */}
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-6 sm:p-8 shadow-xl space-y-6">
+          <motion.div
+            initial={{ opacity: 0, y: 28 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-50px' }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="rounded-2xl border border-slate-200/90 bg-white p-6 sm:p-8 shadow-xl space-y-6"
+          >
             {/* Operator Question */}
             <div className="flex items-start gap-3">
               <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-indigo-100 text-indigo-700 text-xs font-bold font-mono">
@@ -405,21 +449,33 @@ export default function LandingPage() {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* 5. Interactive Asset Lineage & Connectivity Graph */}
+      {/* 5. Interactive Asset Lineage & Connectivity Graph with Scroll Entrance */}
       <section id="lineage" className="py-20 border-t border-slate-200/80 bg-slate-50/70">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-50px' }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8"
+        >
           <ConnectivityTree />
-        </div>
+        </motion.div>
       </section>
 
-      {/* 6. How It Works: 3 Steps */}
+      {/* 6. How It Works: 3 Steps with Scroll Entrance */}
       <section id="how-it-works" className="py-20 border-t border-slate-200/80 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          <div className="text-center max-w-xl mx-auto space-y-2">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-50px' }}
+            transition={{ duration: 0.5 }}
+            className="text-center max-w-xl mx-auto space-y-2"
+          >
             <span className="text-[11px] font-mono uppercase tracking-wider text-indigo-600 font-bold">
               Orchestration Flow
             </span>
@@ -427,11 +483,18 @@ export default function LandingPage() {
             <p className="text-xs sm:text-sm text-slate-500">
               Three clear stages from your natural language question to an auditable operational answer.
             </p>
-          </div>
+          </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Step 1 */}
-            <div className="relative rounded-2xl border border-slate-200 bg-slate-50/70 p-6 space-y-4 shadow-sm hover:shadow-md transition-all">
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-50px' }}
+              transition={{ duration: 0.5, delay: 0.08 }}
+              whileHover={{ y: -4, transition: { duration: 0.2 } }}
+              className="relative rounded-2xl border border-slate-200 bg-slate-50/70 p-6 space-y-4 shadow-sm hover:shadow-md transition-shadow"
+            >
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-600 text-white font-mono font-bold text-sm">
                 01
               </div>
@@ -439,10 +502,17 @@ export default function LandingPage() {
               <p className="text-xs text-slate-600 leading-relaxed">
                 Operator asks about downtime, root causes, compliance deadlines, or repairs in plain English.
               </p>
-            </div>
+            </motion.div>
 
             {/* Step 2 */}
-            <div className="relative rounded-2xl border border-slate-200 bg-slate-50/70 p-6 space-y-4 shadow-sm hover:shadow-md transition-all">
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-50px' }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              whileHover={{ y: -4, transition: { duration: 0.2 } }}
+              className="relative rounded-2xl border border-slate-200 bg-slate-50/70 p-6 space-y-4 shadow-sm hover:shadow-md transition-shadow"
+            >
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-sky-600 text-white font-mono font-bold text-sm">
                 02
               </div>
@@ -450,10 +520,17 @@ export default function LandingPage() {
               <p className="text-xs text-slate-600 leading-relaxed">
                 Queries structured inspection records, runs deterministic calculations, and searches SOPs and manuals.
               </p>
-            </div>
+            </motion.div>
 
             {/* Step 3 */}
-            <div className="relative rounded-2xl border border-slate-200 bg-slate-50/70 p-6 space-y-4 shadow-sm hover:shadow-md transition-all">
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-50px' }}
+              transition={{ duration: 0.5, delay: 0.32 }}
+              whileHover={{ y: -4, transition: { duration: 0.2 } }}
+              className="relative rounded-2xl border border-slate-200 bg-slate-50/70 p-6 space-y-4 shadow-sm hover:shadow-md transition-shadow"
+            >
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-600 text-white font-mono font-bold text-sm">
                 03
               </div>
@@ -461,14 +538,20 @@ export default function LandingPage() {
               <p className="text-xs text-slate-600 leading-relaxed">
                 Renders a ranked table, bar chart, status card, or heatmap inside the chat with record-level citations.
               </p>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* 7. Closing CTA */}
+      {/* 7. Closing CTA with Scroll Entrance */}
       <section className="py-20 border-t border-slate-200/80 bg-gradient-to-b from-slate-50 to-indigo-50/40">
-        <div className="max-w-4xl mx-auto px-4 text-center space-y-6">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-50px' }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="max-w-4xl mx-auto px-4 text-center space-y-6"
+        >
           <div className="inline-flex items-center gap-2 rounded-full border border-indigo-200 bg-indigo-50 px-3.5 py-1 text-xs font-mono text-indigo-700 font-bold">
             Ready for Hackathon Evaluation
           </div>
@@ -486,7 +569,7 @@ export default function LandingPage() {
               Launch Operational Dashboard <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
-        </div>
+        </motion.div>
       </section>
     </div>
   );

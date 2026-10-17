@@ -43,11 +43,7 @@ export default function SettingsPage() {
     setReingesting(true);
     setIngestMsg(null);
     try {
-      await fetch('http://localhost:8000/api/ingestion/load', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ path: './data' }),
-      });
+      await api.reingestData('./data');
       setIngestMsg('Dataset re-ingested and verified successfully.');
     } catch (err: any) {
       setIngestMsg('Failed to trigger ingestion: ' + err.message);
