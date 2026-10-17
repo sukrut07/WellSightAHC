@@ -168,6 +168,11 @@ export default function LandingPage() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const heroRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll();
+  const { scrollYProgress: heroScrollY } = useScroll({
+    target: heroRef,
+    offset: ['start start', 'end start'],
+  });
+  const scrollCueOpacity = useTransform(heroScrollY, [0, 0.25], [1, 0]);
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-slate-900 selection:bg-indigo-500/20 relative overflow-x-hidden">
@@ -349,14 +354,19 @@ export default function LandingPage() {
         </div>
 
         {/* Scroll cue */}
-        <motion.div
+        <motion.a
+          href="#about"
+          style={{ opacity: scrollCueOpacity }}
           animate={{ y: [0, 8, 0] }}
           transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 cursor-pointer group z-20 transition-colors"
+          aria-label="Scroll to explore about section"
         >
-          <span className="text-[10px] font-mono text-white/30 uppercase tracking-widest">Scroll to explore</span>
-          <div className="h-8 w-0.5 bg-gradient-to-b from-white/20 to-transparent rounded-full" />
-        </motion.div>
+          <span className="text-[10px] font-mono text-white/40 group-hover:text-indigo-300 uppercase tracking-widest transition-colors">
+            Scroll to explore
+          </span>
+          <div className="h-8 w-0.5 bg-gradient-to-b from-indigo-400/60 via-emerald-400/40 to-transparent rounded-full group-hover:from-indigo-400 group-hover:via-emerald-400 transition-colors" />
+        </motion.a>
       </section>
 
       {/* ── ABOUT / PROBLEM STATEMENT ──────────────────────── */}
