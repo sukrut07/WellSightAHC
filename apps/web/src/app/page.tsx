@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import { motion, useScroll, useTransform, useInView } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 import {
   Flame,
   ArrowRight,
@@ -99,19 +99,19 @@ function ParticleBackground() {
         <rect width="100%" height="100%" fill="url(#grid)" />
       </svg>
 
-      {/* Floating orbs */}
-      {[...Array(6)].map((_, i) => (
+      {/* Floating orbs — fixed positions to avoid hydration mismatch */}
+      {[
+        { w: 4, h: 4, l: 12, t: 20, bg: '#6366F1' },
+        { w: 3, h: 3, l: 35, t: 55, bg: '#10B981' },
+        { w: 5, h: 5, l: 62, t: 15, bg: '#6366F1' },
+        { w: 2, h: 2, l: 78, t: 70, bg: '#10B981' },
+        { w: 4, h: 4, l: 90, t: 35, bg: '#6366F1' },
+        { w: 3, h: 3, l: 48, t: 85, bg: '#10B981' },
+      ].map(({ w, h, l, t, bg }, i) => (
         <motion.div
           key={i}
           className="absolute rounded-full"
-          style={{
-            width: `${Math.random() * 4 + 2}px`,
-            height: `${Math.random() * 4 + 2}px`,
-            background: i % 2 === 0 ? '#6366F1' : '#10B981',
-            left: `${Math.random() * 100}%`,
-            top: `${Math.random() * 100}%`,
-            opacity: 0.3,
-          }}
+          style={{ width: w, height: h, background: bg, left: `${l}%`, top: `${t}%`, opacity: 0.3 }}
           animate={{ y: [0, -30, 0], opacity: [0.2, 0.5, 0.2] }}
           transition={{ duration: 4 + i, repeat: Infinity, delay: i * 0.8, ease: 'easeInOut' }}
         />
@@ -167,9 +167,6 @@ function TechBadge({ label }: { label: string }) {
 export default function LandingPage() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const heroRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
-  const heroY = useTransform(scrollYProgress, [0, 0.6], [0, -40]);
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-slate-900 selection:bg-indigo-500/20 relative overflow-x-hidden">
@@ -234,10 +231,7 @@ export default function LandingPage() {
         <div className="absolute top-20 left-1/4 w-72 h-72 rounded-full bg-indigo-600/15 blur-[80px] pointer-events-none" />
         <div className="absolute bottom-20 right-1/4 w-56 h-56 rounded-full bg-emerald-500/10 blur-[70px] pointer-events-none" />
 
-        <motion.div
-          style={{ opacity: heroOpacity, y: heroY }}
-          className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full"
-        >
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             {/* Left column */}
             <motion.div
@@ -346,7 +340,7 @@ export default function LandingPage() {
               </div>
             </motion.div>
           </div>
-        </motion.div>
+        </div>
 
         {/* Scroll cue */}
         <motion.div
