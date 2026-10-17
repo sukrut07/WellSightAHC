@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import { motion, useInView } from 'framer-motion';
+import { motion, useScroll, useTransform, useInView } from 'framer-motion';
 import {
   Flame,
   ArrowRight,
@@ -167,9 +167,15 @@ function TechBadge({ label }: { label: string }) {
 export default function LandingPage() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const heroRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll();
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-slate-900 selection:bg-indigo-500/20 relative overflow-x-hidden">
+      {/* ── GLOBAL SCROLL PROGRESS INDICATOR ───────────────── */}
+      <motion.div
+        className="fixed top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-indigo-500 via-sky-400 to-emerald-400 z-[60] origin-left pointer-events-none"
+        style={{ scaleX: scrollYProgress }}
+      />
 
       {/* ── STICKY NAV ───────────────────────────────────────── */}
       <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/90 backdrop-blur-md">
