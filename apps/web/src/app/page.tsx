@@ -380,7 +380,7 @@ export default function LandingPage() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-60px' }}
+              viewport={{ once: true, amount: 0.15 }}
               transition={{ duration: 0.6 }}
             >
               <span className="text-[11px] font-mono uppercase tracking-wider text-rose-600 font-bold">The Problem</span>
@@ -409,7 +409,7 @@ export default function LandingPage() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-60px' }}
+              viewport={{ once: true, amount: 0.15 }}
               transition={{ duration: 0.6, delay: 0.15 }}
             >
               <span className="text-[11px] font-mono uppercase tracking-wider text-emerald-600 font-bold">The Solution</span>
@@ -690,7 +690,7 @@ export default function LandingPage() {
                   key={title}
                   initial={{ opacity: 0, y: 24 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: '-40px' }}
+                  viewport={{ once: true, amount: 0.15 }}
                   transition={{ duration: 0.5, delay: (i % 3) * 0.1 }}
                   whileHover={{ y: -4, transition: { duration: 0.2 } }}
                   className={`rounded-2xl border ${c.border} bg-gradient-to-br ${c.bg} p-6 space-y-3 shadow-sm hover:shadow-md transition-shadow`}
