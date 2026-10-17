@@ -173,6 +173,9 @@ export default function LandingPage() {
     offset: ['start start', 'end start'],
   });
   const scrollCueOpacity = useTransform(heroScrollY, [0, 0.25], [1, 0]);
+  const glowY1 = useTransform(heroScrollY, [0, 1], [0, 60]);
+  const glowY2 = useTransform(heroScrollY, [0, 1], [0, -40]);
+  const heroContentY = useTransform(heroScrollY, [0, 1], [0, 35]);
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-slate-900 selection:bg-indigo-500/20 relative overflow-x-hidden">
@@ -238,11 +241,11 @@ export default function LandingPage() {
       <section ref={heroRef} className="relative min-h-[92vh] flex items-center pt-8 pb-20 overflow-hidden bg-gradient-to-br from-slate-950 via-[#0F1729] to-[#0B1120]">
         <ParticleBackground />
 
-        {/* Decorative glows */}
-        <div className="absolute top-20 left-1/4 w-72 h-72 rounded-full bg-indigo-600/15 blur-[80px] pointer-events-none" />
-        <div className="absolute bottom-20 right-1/4 w-56 h-56 rounded-full bg-emerald-500/10 blur-[70px] pointer-events-none" />
+        {/* Decorative glows with scroll parallax */}
+        <motion.div style={{ y: glowY1 }} className="absolute top-20 left-1/4 w-72 h-72 rounded-full bg-indigo-600/15 blur-[80px] pointer-events-none" />
+        <motion.div style={{ y: glowY2 }} className="absolute bottom-20 right-1/4 w-56 h-56 rounded-full bg-emerald-500/10 blur-[70px] pointer-events-none" />
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        <motion.div style={{ y: heroContentY }} className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             {/* Left column */}
             <motion.div
@@ -351,7 +354,7 @@ export default function LandingPage() {
               </div>
             </motion.div>
           </div>
-        </div>
+        </motion.div>
 
         {/* Scroll cue */}
         <motion.a
