@@ -34,7 +34,7 @@ def get_spills_analytics(
 
 @router.get("/heatmap")
 def get_heatmap_analytics(db: Session = Depends(get_db)):
-    areas = ["Area A", "Area B", "Area C"]
+    areas = ["Area A", "Area B", "Area C", "Area D"]
     months = [("June 2026", "2026-06-01", "2026-06-30"), ("July 2026", "2026-07-01", "2026-07-31"), ("August 2026", "2026-08-01", "2026-08-31")]
     cells = []
     for a in areas:

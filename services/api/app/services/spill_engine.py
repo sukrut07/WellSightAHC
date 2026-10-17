@@ -6,7 +6,7 @@ from app.models.correction import Correction
 
 class SpillEngine:
     @staticmethod
-    def get_effective_spill_values(db: Session, event: RegulatorEvent) -> Dict[str, Any]:
+    def get_effective_spill_values(db: Session, event: RegulatorEvent, preloaded_corrections: Optional[List[Correction]] = None) -> Dict[str, Any]:
         """
         Retrieves effective volume and timestamps after checking for accepted corrections.
         Preserves original values in returned dict.
@@ -16,16 +16,19 @@ class SpillEngine:
         corrections_applied = []
 
         # Check for accepted corrections on this record
-        corrections = (
-            db.query(Correction)
-            .filter(
-                Correction.scope == "record",
-                Correction.target_id == event.id,
-                Correction.status == "Accepted"
+        if preloaded_corrections is not None:
+            corrections = preloaded_corrections
+        else:
+            corrections = (
+                db.query(Correction)
+                .filter(
+                    Correction.scope == "record",
+                    Correction.target_id == event.id,
+                    Correction.status == "Accepted"
+                )
+                .order_by(Correction.created_at.asc())
+                .all()
             )
-            .order_by(Correction.created_at.asc())
-            .all()
-        )
 
         for corr in corrections:
             if corr.target_field == "volume_barrels":
@@ -45,7 +48,7 @@ class SpillEngine:
         }
 
     @classmethod
-    def evaluate_spill_compliance(cls, db: Session, event: RegulatorEvent) -> Dict[str, Any]:
+    def evaluate_spill_compliance(cls, db: Session, event: RegulatorEvent, preloaded_corrections: Optional[List[Correction]] = None) -> Dict[str, Any]:
         """
         Evaluates regulatory compliance under SOP-ENV-004:
         - Volume >= 5.0 bbl: mandatory reporting to regulator within 24 hours.
@@ -55,7 +58,7 @@ class SpillEngine:
         - If not reported and > 24h passed: 'Violation (Unreported)'.
         - If elapsed <= 24 hours: 'Compliant'.
         """
-        eff = cls.get_effective_spill_values(db, event)
+        eff = cls.get_effective_spill_values(db, event, preloaded_corrections)
         volume = eff["effective_volume"]
         reported_at_str = eff["effective_reported_at"]
         occurred_at_str = event.occurred_at
@@ -164,5 +167,18 @@ class SpillEngine:
         if end_date:
             query = query.filter(RegulatorEvent.occurred_at <= end_date)
         
+        accepted_corrections = (
+            db.query(Correction)
+            .filter(
+                Correction.scope == "record",
+                Correction.status == "Accepted"
+            )
+            .order_by(Correction.created_at.asc())
+            .all()
+        )
+        corr_map: Dict[str, List[Correction]] = {}
+        for c in accepted_corrections:
+            corr_map.setdefault(c.target_id, []).append(c)
+
         events = query.order_by(RegulatorEvent.occurred_at.asc()).all()
-        return [cls.evaluate_spill_compliance(db, ev) for ev in events]
+        return [cls.evaluate_spill_compliance(db, ev, corr_map.get(ev.id, [])) for ev in events]

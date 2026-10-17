@@ -82,6 +82,37 @@ export default function CorrectionsPage() {
         </button>
       </motion.div>
 
+      {/* KPI Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="rounded-2xl border border-emerald-200 bg-emerald-50/50 p-4 space-y-1">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800">Accepted Overrides</span>
+          <div className="text-2xl font-extrabold text-emerald-950 font-mono">
+            {corrections.filter((c) => c.status === 'Accepted').length}
+          </div>
+          <p className="text-[11px] text-emerald-700 font-medium">Takes mathematical precedence in downtime math</p>
+        </div>
+
+        <div className="rounded-2xl border border-amber-200 bg-amber-50/50 p-4 space-y-1">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-amber-800">Contested Claims</span>
+          <div className="text-2xl font-extrabold text-amber-950 font-mono">
+            {corrections.filter((c) => c.status === 'Contested').length}
+          </div>
+          <p className="text-[11px] text-amber-700 font-medium">Flagged in Conflict Registry for supervisor review</p>
+        </div>
+
+        <div className="rounded-2xl border border-indigo-200 bg-indigo-50/50 p-4 space-y-1">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-800">Scoped Granularity</span>
+          <div className="text-2xl font-extrabold text-indigo-950 font-mono">3 Tiers</div>
+          <p className="text-[11px] text-indigo-700 font-medium">Record-level, well-level, and well-type overrides</p>
+        </div>
+
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 space-y-1">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Raw Data Invariance</span>
+          <div className="text-2xl font-extrabold text-slate-900 font-mono">100% Immutable</div>
+          <p className="text-[11px] text-slate-500 font-medium">Zero in-place modifications to dataset files</p>
+        </div>
+      </div>
+
       {/* Rules Notice */}
       <div className="rounded-2xl border border-sky-200 bg-[#E0F2FE]/40 p-4 text-xs text-sky-900 space-y-1">
         <span className="font-bold flex items-center gap-1.5 text-sky-950">

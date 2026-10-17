@@ -156,7 +156,12 @@ class ToolRegistry:
         date_range: Optional[str] = None
     ) -> Dict[str, Any]:
         """Tool 6: Calculate total and categorized repair costs."""
-        query = db.query(Repair).join(Well)
+        from sqlalchemy import func
+        query = db.query(
+            Repair.cause_category,
+            func.sum(Repair.cost_usd),
+            func.count(Repair.id)
+        )
         if area:
             norm_area = area.strip().lower()
             AREA_ALIASES = {
@@ -174,19 +179,23 @@ class ToolRegistry:
                 "area_d": "Northeast Block 8",
             }
             target_area = AREA_ALIASES.get(norm_area, area)
-            query = query.filter(Well.area.ilike(f"%{target_area}%"))
-        repairs = query.all()
+            query = query.join(Well).filter(Well.area.ilike(f"%{target_area}%"))
 
-        total_cost = sum(r.cost_usd for r in repairs)
+        results = query.group_by(Repair.cause_category).all()
         by_category: Dict[str, float] = {}
-        for r in repairs:
-            cat = r.cause_category or "Uncategorized"
-            by_category[cat] = by_category.get(cat, 0.0) + r.cost_usd
+        total_cost = 0.0
+        repairs_count = 0
+        for cat, cost_sum, cnt in results:
+            cat_name = cat or "Uncategorized"
+            cost_val = float(cost_sum or 0.0)
+            by_category[cat_name] = cost_val
+            total_cost += cost_val
+            repairs_count += (cnt or 0)
 
         return {
             "area": area or "All Areas",
             "total_repair_cost_usd": total_cost,
-            "repairs_count": len(repairs),
+            "repairs_count": repairs_count,
             "cost_by_category": by_category
         }
 

@@ -1,6 +1,7 @@
 from typing import Optional, List
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from app.core.database import get_db
 from app.models.well import Well
 from app.models.inspection import Inspection
@@ -48,14 +49,24 @@ def list_wells(
         query = query.filter((Well.name.ilike(s)) | (Well.id.ilike(s)))
 
     wells = query.order_by(Well.id.asc()).all()
+    well_ids = [w.id for w in wells]
+
+    # Ultra-fast batch counts (4 single SQL queries instead of 3,000!)
+    insp_counts = dict(db.query(Inspection.well_id, func.count(Inspection.id)).filter(Inspection.well_id.in_(well_ids)).group_by(Inspection.well_id).all()) if well_ids else {}
+    repair_counts = dict(db.query(Repair.well_id, func.count(Repair.id)).filter(Repair.well_id.in_(well_ids)).group_by(Repair.well_id).all()) if well_ids else {}
+    spill_counts = dict(db.query(RegulatorEvent.well_id, func.count(RegulatorEvent.id)).filter(RegulatorEvent.well_id.in_(well_ids)).group_by(RegulatorEvent.well_id).all()) if well_ids else {}
+    corr_counts = dict(db.query(Correction.target_id, func.count(Correction.id)).filter(Correction.target_id.in_(well_ids), Correction.status == 'Accepted').group_by(Correction.target_id).all()) if well_ids else {}
+
+    all_conflicts = ConflictEngine.detect_all_conflicts(db)
+    conflict_counts = {}
+    for c in all_conflicts:
+        wid = getattr(c, 'target_id', None)
+        if wid:
+            conflict_counts[wid] = conflict_counts.get(wid, 0) + 1
+
     results = []
-
     for w in wells:
-        # Calculate downtime for summer
         dt_res = DowntimeEngine.calculate_well_downtime(db, w.id, "2026-06-01", "2026-08-31")
-        conflicts = ConflictEngine.detect_conflicts_for_well(db, w.id)
-        corrs = db.query(Correction).filter(Correction.target_id == w.id, Correction.status == "Accepted").count()
-
         results.append(WellDetailResponse(
             id=w.id,
             name=w.name,
@@ -68,11 +79,11 @@ def list_wells(
             commissioned_date=w.commissioned_date,
             status=w.status,
             measured_downtime_days=dt_res["downtime_days"],
-            recent_inspections_count=len(w.inspections),
-            active_repairs_count=len(w.repairs),
-            spills_count=len(w.regulator_events),
-            active_conflicts_count=len(conflicts),
-            accepted_corrections_count=corrs
+            recent_inspections_count=insp_counts.get(w.id, 0),
+            active_repairs_count=repair_counts.get(w.id, 0),
+            spills_count=spill_counts.get(w.id, 0),
+            active_conflicts_count=conflict_counts.get(w.id, 0),
+            accepted_corrections_count=corr_counts.get(w.id, 0)
         ))
 
     return WellListResponse(wells=results, total_count=len(results))
