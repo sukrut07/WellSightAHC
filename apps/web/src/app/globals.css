@@ -1,71 +1,98 @@
 @import "tailwindcss";
 
 :root {
-  --bg-space: #070D19;
-  --bg-surface: #0B1220;
-  --bg-elevated: #111C2E;
-  --bg-card: #0F192B;
-  --border-subtle: rgba(51, 65, 85, 0.45);
-  --border-highlight: rgba(0, 212, 161, 0.3);
-  --accent-emerald: #00D4A1;
-  --accent-lime: #A3E635;
-  --accent-sky: #38BDF8;
-  --accent-amber: #F59E0B;
-  --accent-rose: #F43F5E;
+  --bg-canvas: #F8FAFC;
+  --bg-surface: #FFFFFF;
+  --bg-elevated: #F1F5F9;
+  --bg-card: rgba(255, 255, 255, 0.88);
+  --border-subtle: rgba(226, 232, 240, 0.85);
+  --border-highlight: rgba(99, 102, 241, 0.3);
+  --accent-indigo: #4F46E5;
+  --accent-emerald: #10B981;
+  --accent-lime: #84CC16;
+  --accent-sky: #0284C7;
+  --accent-amber: #D97706;
+  --accent-rose: #E11D48;
 }
 
 html {
   scroll-behavior: smooth;
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 body {
-  background-color: var(--bg-space);
-  color: #F1F5F9;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: var(--bg-canvas);
+  color: #0F172A;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   overflow-x: hidden;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Subtle Industrial Dot Grid Pattern */
+code, pre, .font-mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Glassmorphism Surface Panels */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.04), 0 4px 12px -2px rgba(0, 0, 0, 0.02);
+}
+
+.glass-panel-hover {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-panel-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 36px -6px rgba(0, 0, 0, 0.08), 0 6px 16px -3px rgba(0, 0, 0, 0.03);
+  border-color: rgba(199, 210, 254, 0.8);
+}
+
+/* Subtle Industrial Dot Grid Pattern for Canvas Fallback */
 .bg-grid-pattern {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-  background-size: 24px 24px;
-}
-
-.bg-dot-matrix {
-  background-image: radial-gradient(rgba(0, 212, 161, 0.12) 1.2px, transparent 1.2px);
+  background-image: radial-gradient(rgba(148, 163, 184, 0.2) 1px, transparent 1px);
   background-size: 28px 28px;
 }
 
-/* Subtle glow utilities */
+.bg-dot-matrix {
+  background-image: radial-gradient(rgba(99, 102, 241, 0.12) 1.2px, transparent 1.2px);
+  background-size: 32px 32px;
+}
+
+/* Soft Glow Utilities */
+.glow-indigo-subtle {
+  box-shadow: 0 0 35px -8px rgba(99, 102, 241, 0.18);
+}
+
 .glow-emerald-subtle {
-  box-shadow: 0 0 35px -8px rgba(0, 212, 161, 0.15);
+  box-shadow: 0 0 35px -8px rgba(16, 185, 129, 0.18);
 }
 
-.glow-card {
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5), 0 0 1px 1px rgba(255, 255, 255, 0.06);
-}
-
-/* Custom scrollbars */
+/* Custom Scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #070D19;
+  background: #F1F5F9;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1E293B;
-  border-radius: 3px;
+  background: #CBD5E1;
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: #94A3B8;
 }
 
-/* Animated node connectivity lines */
+/* Animated Flowline for SVG telemetry connections */
 @keyframes flowDash {
   to {
     stroke-dashoffset: -24;
@@ -83,7 +110,7 @@ body {
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-5px);
+    transform: translateY(-4px);
   }
 }
 

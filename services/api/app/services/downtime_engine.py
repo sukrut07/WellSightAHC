@@ -14,6 +14,10 @@ DEFAULT_TEMP_THRESHOLDS: Dict[str, float] = {
     "Rod Pump": 12.0,
     "Flowing": 18.0,
     "Natural Flowing": 18.0,
+    "T200": 15.0,
+    "T350": 20.0,
+    "t200": 15.0,
+    "t350": 20.0,
 }
 
 class DowntimeEngine:

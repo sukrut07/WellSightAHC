@@ -32,7 +32,7 @@ export const Hero3DCanvas: React.FC = () => {
 
     // Three.js Scene Setup
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x070d19, 0.08);
+    scene.fog = new THREE.FogExp2(0xf8fafc, 0.03);
 
     const width = container.clientWidth || 500;
     const height = container.clientHeight || 500;
@@ -47,7 +47,7 @@ export const Hero3DCanvas: React.FC = () => {
       renderer.setSize(width, height);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
-      renderer.toneMappingExposure = 1.2;
+      renderer.toneMappingExposure = 1.25;
       container.appendChild(renderer.domElement);
     } catch {
       setHasWebGL(false);
@@ -56,16 +56,16 @@ export const Hero3DCanvas: React.FC = () => {
     }
 
     // Lighting
-    const ambientLight = new THREE.AmbientLight(0x0f2942, 1.8);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 2.2);
     scene.add(ambientLight);
 
-    const dirLight = new THREE.DirectionalLight(0x00d4a1, 2.4);
+    const dirLight = new THREE.DirectionalLight(0x4f46e5, 3.2);
     dirLight.position.set(4, 8, 5);
     scene.add(dirLight);
 
-    const blueLight = new THREE.DirectionalLight(0x38bdf8, 1.5);
-    blueLight.position.set(-5, -2, -3);
-    scene.add(blueLight);
+    const emeraldLight = new THREE.DirectionalLight(0x10b981, 2.2);
+    emeraldLight.position.set(-5, -2, -3);
+    scene.add(emeraldLight);
 
     // Group for the entire stylized industrial asset
     const assetGroup = new THREE.Group();
@@ -314,8 +314,8 @@ export const Hero3DCanvas: React.FC = () => {
       />
 
       {/* Subtle Asset Tag Overlay */}
-      <div className="absolute bottom-3 left-4 sm:left-8 z-10 flex items-center gap-2 rounded-full border border-slate-800/80 bg-slate-950/80 backdrop-blur-md px-3 py-1.5 text-[11px] font-mono text-slate-300">
-        <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+      <div className="absolute bottom-3 left-4 sm:left-8 z-10 flex items-center gap-2 rounded-full border border-slate-200/90 bg-white/90 backdrop-blur-md px-3.5 py-1.5 text-[11px] font-mono text-slate-700 shadow-sm">
+        <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
         <span>WELLHEAD SENSOR TWIN · TELEMETRY ACTIVE</span>
       </div>
     </div>

@@ -78,6 +78,13 @@ class DataImporter:
         total_failed = 0
         file_summaries = []
 
+        # 0. Ingest FlytBase Asset Dataset Structure if present (assets/WELL-* or fleet/)
+        if (p / "assets").exists() or (p / "fleet").exists() or list(p.glob("WELL-*")):
+            fb_res = cls.import_flytbase_directory(db, p, batch_id)
+            total_imported += fb_res["imported"]
+            total_failed += fb_res["failed"]
+            file_summaries.extend(fb_res.get("summaries", []))
+
         # 1. Ingest Wells
         well_files = list(p.glob("*well*.csv")) + list(p.glob("wells.csv"))
         for wf in set(well_files):
@@ -396,3 +403,255 @@ class DataImporter:
         except Exception as e:
             failed += 1
         return {"file": file_path.name, "type": "document_chunks", "imported": imported, "failed": failed}
+
+    @classmethod
+    def import_flytbase_directory(cls, db: Session, base_dir: Path, batch_id: str) -> Dict[str, Any]:
+        """Imports FlytBase Asset Intelligence format (assets/WELL-*, fleet/areas.json, fleet/sops, fleet/well-types)."""
+        imported, failed = 0, 0
+        summaries = []
+
+        # 1. Load Area and Team mappings if fleet/areas.json exists
+        area_map = {}
+        areas_file = base_dir / "fleet" / "areas.json"
+        if not areas_file.exists():
+            areas_file = base_dir / "areas.json"
+        if areas_file.exists():
+            try:
+                with open(areas_file, "r", encoding="utf-8") as f:
+                    areas_data = json.load(f)
+                    for a in areas_data.get("areas", []):
+                        area_map[a["area_id"]] = a.get("name", a["area_id"])
+            except Exception:
+                pass
+
+        # 2. Discover well directories
+        well_dirs = []
+        assets_dir = base_dir / "assets"
+        if assets_dir.exists():
+            well_dirs.extend([d for d in assets_dir.iterdir() if d.is_dir() and d.name.startswith("WELL-")])
+        well_dirs.extend([d for d in base_dir.iterdir() if d.is_dir() and d.name.startswith("WELL-")])
+        well_dirs = sorted(list(set(well_dirs)), key=lambda d: d.name)
+
+        well_imported = 0
+        insp_imported = 0
+        maint_imported = 0
+        reg_imported = 0
+        note_imported = 0
+
+        for wdir in well_dirs:
+            well_id = wdir.name
+            well_type = "T200"
+
+            # 2a. Well metadata.json
+            meta_path = wdir / "metadata.json"
+            if meta_path.exists():
+                try:
+                    with open(meta_path, "r", encoding="utf-8") as mf:
+                        mdata = json.load(mf)
+                    well_id = mdata.get("asset_id", well_id)
+                    well_type = mdata.get("well_type", "T200")
+                    area_id = mdata.get("area_id", "SW-23")
+                    area_name = area_map.get(area_id, area_id)
+                    loc = mdata.get("location", {})
+
+                    existing_well = db.query(Well).filter(Well.id == well_id).first()
+                    if not existing_well:
+                        w_obj = Well(
+                            id=well_id,
+                            name=mdata.get("name", well_id),
+                            area=area_name,
+                            field="Permian Basin",
+                            well_type=well_type,
+                            target_formation="Wolfcamp",
+                            latitude=float(loc.get("lat", 0.0)) if loc.get("lat") else None,
+                            longitude=float(loc.get("lon", 0.0)) if loc.get("lon") else None,
+                            commissioned_date=mdata.get("installed_on"),
+                            status=mdata.get("recorded_status", "Active").capitalize()
+                        )
+                        db.add(w_obj)
+                    else:
+                        existing_well.name = mdata.get("name", existing_well.name)
+                        existing_well.area = area_name
+                        existing_well.well_type = well_type
+                    well_imported += 1
+                except Exception:
+                    failed += 1
+
+            # 2b. Inspections inspections.jsonl
+            insp_path = wdir / "inspections.jsonl"
+            if insp_path.exists():
+                try:
+                    with open(insp_path, "r", encoding="utf-8") as inf:
+                        for line in inf:
+                            line = line.strip()
+                            if not line:
+                                continue
+                            irow = json.loads(line)
+                            iid = irow.get("inspection_id")
+                            if not iid:
+                                continue
+                            existing_i = db.query(Inspection).filter(Inspection.id == iid).first()
+                            amb = float(irow.get("ambient_temp_c", 0.0))
+                            wh = float(irow.get("wellhead_temp_c", 0.0))
+                            thresh = 15.0 if well_type == "T200" else 20.0
+                            is_prod = (wh - amb) >= thresh
+                            status_str = "Producing" if is_prod else "Not Producing"
+
+                            if not existing_i:
+                                new_insp = Inspection(
+                                    id=iid,
+                                    well_id=well_id,
+                                    inspection_date=irow.get("inspected_at", "")[:10],
+                                    inspector=irow.get("inspector_user_id"),
+                                    ambient_temp_f=amb,
+                                    wellhead_temp_f=wh,
+                                    surface_pressure_psi=0.0,
+                                    flow_line_pressure_psi=0.0,
+                                    observed_production_status=status_str,
+                                    is_missed=False,
+                                    notes=irow.get("notes"),
+                                    source_file=insp_path.name,
+                                    import_batch=batch_id
+                                )
+                                db.add(new_insp)
+                            insp_imported += 1
+
+                            # If spill detected, record event
+                            if irow.get("spill_detected") and irow.get("spill_est_volume_bbl"):
+                                sp_id = f"REG-SPIL-{iid}"
+                                if not db.query(RegulatorEvent).filter(RegulatorEvent.id == sp_id).first():
+                                    sp_vol = float(irow.get("spill_est_volume_bbl", 0.0))
+                                    sp_ev = RegulatorEvent(
+                                        id=sp_id,
+                                        well_id=well_id,
+                                        event_type="Spill",
+                                        occurred_at=irow.get("inspected_at", ""),
+                                        volume_barrels=sp_vol,
+                                        substance="Crude Oil",
+                                        reported_to_regulator=False,
+                                        regulator_agency="State Oil & Gas Commission",
+                                        investigation_notes=f"Spill detected on pad {irow.get('spill_area_pct', 0)}% area. {irow.get('notes', '')}",
+                                        source_file=insp_path.name
+                                    )
+                                    db.add(sp_ev)
+                                    reg_imported += 1
+                except Exception:
+                    failed += 1
+
+            # 2c. Maintenance maintenance.jsonl
+            maint_path = wdir / "maintenance.jsonl"
+            if maint_path.exists():
+                try:
+                    with open(maint_path, "r", encoding="utf-8") as mf:
+                        for line in mf:
+                            line = line.strip()
+                            if not line:
+                                continue
+                            mrow = json.loads(line)
+                            mid = mrow.get("maintenance_id")
+                            if not mid or db.query(Repair).filter(Repair.id == mid).first():
+                                continue
+                            cost_val = 0.0
+                            if isinstance(mrow.get("cost_usd"), dict):
+                                cost_val = float(mrow["cost_usd"].get("total", 0.0) or 0.0)
+                            elif mrow.get("cost_usd"):
+                                cost_val = float(mrow.get("cost_usd", 0.0) or 0.0)
+
+                            repair = Repair(
+                                id=mid,
+                                well_id=well_id,
+                                start_date=mrow.get("started_at", "")[:10],
+                                end_date=mrow.get("completed_at", "")[:10] if mrow.get("completed_at") else None,
+                                repair_type=mrow.get("maintenance_type", "corrective").capitalize(),
+                                cause_category=mrow.get("equipment_kind", "Mechanical").replace("_", " ").title(),
+                                documented_cause=mrow.get("issue", "Repairs performed"),
+                                cost_usd=cost_val,
+                                technician=mrow.get("technician_user_id"),
+                                status="Completed" if mrow.get("completed_at") else "In Progress",
+                                source_file=maint_path.name
+                            )
+                            db.add(repair)
+                            maint_imported += 1
+                except Exception:
+                    failed += 1
+
+            # 2d. Regulatory Events regulatory-events.jsonl
+            reg_path = wdir / "regulatory-events.jsonl"
+            if reg_path.exists():
+                try:
+                    with open(reg_path, "r", encoding="utf-8") as rf:
+                        for line in rf:
+                            line = line.strip()
+                            if not line:
+                                continue
+                            rrow = json.loads(line)
+                            rid = rrow.get("event_id")
+                            if not rid or db.query(RegulatorEvent).filter(RegulatorEvent.id == rid).first():
+                                continue
+                            ev_type = rrow.get("event_type", "Notice").replace("_", " ").title()
+                            is_filed = "filed" in rrow.get("event_type", "").lower()
+                            reg_ev = RegulatorEvent(
+                                id=rid,
+                                well_id=well_id,
+                                event_type=ev_type,
+                                occurred_at=rrow.get("date", ""),
+                                volume_barrels=0.0,
+                                substance="Crude Oil",
+                                reported_to_regulator=is_filed,
+                                reported_at=rrow.get("date", "") if is_filed else None,
+                                regulator_agency=rrow.get("agency"),
+                                investigation_notes=rrow.get("detail"),
+                                source_file=reg_path.name
+                            )
+                            db.add(reg_ev)
+                            reg_imported += 1
+                except Exception:
+                    failed += 1
+
+            # 2e. Context context.jsonl (Human notes & Corrections)
+            ctx_path = wdir / "context.jsonl"
+            if ctx_path.exists():
+                try:
+                    with open(ctx_path, "r", encoding="utf-8") as cf:
+                        for line in cf:
+                            line = line.strip()
+                            if not line:
+                                continue
+                            crow = json.loads(line)
+                            cid = crow.get("note_id")
+                            if not cid:
+                                continue
+                            if crow.get("note_type") == "correction":
+                                if not db.query(Correction).filter(Correction.id == cid).first():
+                                    corr = Correction(
+                                        id=cid,
+                                        scope="record",
+                                        target_id=crow.get("inspection_id", well_id),
+                                        target_field="observed_production_status",
+                                        original_value="Spill / Non-Producing",
+                                        corrected_value="Produced Water / Producing",
+                                        author=crow.get("author_user_id", "Field Lead"),
+                                        reason=crow.get("text", "Field inspection correction"),
+                                        status="Accepted"
+                                    )
+                                    db.add(corr)
+                                    note_imported += 1
+                            else:
+                                if not db.query(HumanNote).filter(HumanNote.id == cid).first():
+                                    hnote = HumanNote(
+                                        id=cid,
+                                        well_id=well_id,
+                                        author=crow.get("author_user_id", "Operator"),
+                                        category=crow.get("note_type", "Operational").replace("_", " ").title(),
+                                        content=crow.get("text", "")
+                                    )
+                                    db.add(hnote)
+                                    note_imported += 1
+                except Exception:
+                    failed += 1
+
+        db.commit()
+        total_fb = well_imported + insp_imported + maint_imported + reg_imported + note_imported
+        summaries.append({"file": "flytbase_assets", "type": "assets", "imported": total_fb, "failed": failed})
+        return {"imported": total_fb, "failed": failed, "summaries": summaries}
+

@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Database, Cpu, ArrowRight, CheckCircle2, AlertTriangle, Layers } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Database, Cpu, ArrowRight, CheckCircle2, AlertTriangle, Layers, Radio, Sparkles } from 'lucide-react';
 
 interface NodeItem {
   id: string;
@@ -18,9 +19,9 @@ const NODES: NodeItem[] = [
   {
     id: 'scada-temp',
     category: 'input',
-    title: 'SCADA Thermal Logs',
-    badge: 'Telemetry',
-    detail: 'Wellhead (98°F) vs Ambient (88°F) weekly measurements across 12 field assets.',
+    title: 'SCADA Gateway Telemetry',
+    badge: 'IoT Uplink',
+    detail: 'Wellhead vs Ambient temperature weekly measurements across Permian Basin assets via GW-SW23/NE07.',
     connections: ['thermal-calc'],
     status: 'active',
   },
@@ -28,8 +29,8 @@ const NODES: NodeItem[] = [
     id: 'inspection-records',
     category: 'input',
     title: 'Weekly Field Inspections',
-    badge: '27 Records',
-    detail: 'Pumper visual observations, operating states, and recorded mechanical notes.',
+    badge: '40k Records',
+    detail: 'Drone and manual inspections, surface temperature readings, and observed pad conditions.',
     connections: ['downtime-engine'],
     status: 'active',
   },
@@ -37,8 +38,8 @@ const NODES: NodeItem[] = [
     id: 'spill-reports',
     category: 'input',
     title: 'Environmental Events',
-    badge: 'Spill Logs',
-    detail: 'Field barrel releases, containment logs, and regulatory notification dispatch times.',
+    badge: 'Spill SOP',
+    detail: 'Crude oil releases, pad coverage percentages, and 24-hour statutory agency dispatch logs.',
     connections: ['spill-engine', 'conflict-engine'],
     status: 'warning',
   },
@@ -46,7 +47,7 @@ const NODES: NodeItem[] = [
     id: 'corrections-ledger',
     category: 'input',
     title: 'Operator Corrections',
-    badge: 'Audited Overrides',
+    badge: 'Dual Memory',
     detail: 'Certified sensor recalibrations with author provenance, reason, and immutable raw values.',
     connections: ['downtime-engine', 'conflict-engine'],
     status: 'verified',
@@ -56,18 +57,18 @@ const NODES: NodeItem[] = [
   {
     id: 'thermal-calc',
     category: 'engine',
-    title: 'Thermal Lift Threshold Engine',
-    badge: 'Rule 2.2',
-    detail: 'Deterministic evaluation: Gas Lift (ΔT ≥ 15°F), ESP (ΔT ≥ 25°F), Rod Pump (ΔT ≥ 12°F).',
+    title: 'Thermal Delta Engine',
+    badge: 'T200 / T350',
+    detail: 'Deterministic evaluation: T200 (ΔT ≥ 15°C), T350 (ΔT ≥ 20°C), Gas Lift (ΔT ≥ 15°F), ESP (ΔT ≥ 25°F).',
     connections: ['downtime-engine', 'gen-status-card'],
     status: 'verified',
   },
   {
     id: 'downtime-engine',
     category: 'engine',
-    title: 'Inspection Downtime Calculator',
+    title: 'Inspection Downtime Engine',
     badge: '7d / 14d Rule',
-    detail: '1 qualifying inspection = 7 days; 2 consecutive = 14 days; missed inspections = 0 days.',
+    detail: '1 qualifying cold inspection = 7 days; 2 consecutive = 14 days; missed inspections = 0 days.',
     connections: ['gen-table', 'gen-heatmap'],
     status: 'active',
   },
@@ -75,7 +76,7 @@ const NODES: NodeItem[] = [
     id: 'spill-engine',
     category: 'engine',
     title: '24h Spill Compliance Auditor',
-    badge: 'SOP-ENV-004',
+    badge: 'SR-01 Rule',
     detail: 'Spills ≥ 5.0 bbl flagged against 24-hour statutory reporting deadline. No false violations.',
     connections: ['gen-table', 'conflict-engine'],
     status: 'active',
@@ -94,27 +95,27 @@ const NODES: NodeItem[] = [
   {
     id: 'gen-table',
     category: 'output',
-    title: 'Dynamic Ranked Data Table',
+    title: 'Ranked Data Table',
     badge: 'data_table',
     detail: 'Sortable downtime and compliance ledgers with clickable record badges.',
     connections: [],
-    status: 'active',
+    status: 'verified',
   },
   {
     id: 'gen-heatmap',
     category: 'output',
-    title: '2D Monthly Area Heatmap',
+    title: 'Monthly Heatmap Matrix',
     badge: 'heatmap',
-    detail: 'Matrix comparing operational downtime hot-spots across Area A, Area B, and Area C.',
+    detail: 'Two-dimensional Area × Month matrix color-coded by cumulative downtime days.',
     connections: [],
     status: 'active',
   },
   {
     id: 'gen-status-card',
     category: 'output',
-    title: 'Wellhead Telemetry Status Card',
-    badge: 'well_status_card',
-    detail: 'Root-cause diagnostic card linking work tickets, SOP thresholds, and sensor values.',
+    title: 'Wellhead Status Twin',
+    badge: 'status_card',
+    detail: 'Live thermal delta gauge, lift status, and active mechanical repair badges.',
     connections: [],
     status: 'verified',
   },
@@ -134,7 +135,6 @@ export const ConnectivityTree: React.FC = () => {
 
   const selectedNode = NODES.find((n) => n.id === selectedNodeId) || NODES[1];
 
-  // Helper to determine if a connection is active
   const isConnected = (sourceId: string, targetId: string) => {
     if (selectedNodeId === sourceId) {
       return NODES.find((n) => n.id === sourceId)?.connections.includes(targetId);
@@ -150,38 +150,34 @@ export const ConnectivityTree: React.FC = () => {
   const outputs = NODES.filter((n) => n.category === 'output');
 
   return (
-    <div className="relative rounded-2xl border border-slate-800/80 bg-[#0A1224] p-5 sm:p-7 shadow-2xl overflow-hidden">
-      {/* Background ambient gradient */}
-      <div className="absolute top-0 right-0 h-96 w-96 rounded-full bg-emerald-500/5 blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 left-0 h-96 w-96 rounded-full bg-sky-500/5 blur-3xl pointer-events-none" />
-
+    <div className="relative rounded-2xl border border-slate-200/90 bg-white/90 backdrop-blur-xl p-5 sm:p-7 shadow-lg overflow-hidden">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-6 border-b border-slate-800/80">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-6 border-b border-slate-100">
         <div>
           <div className="flex items-center gap-2">
-            <span className="flex h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-[11px] font-mono uppercase tracking-wider text-emerald-400 font-semibold">
+            <span className="flex h-2.5 w-2.5 rounded-full bg-indigo-600 animate-pulse" />
+            <span className="text-[11px] font-mono uppercase tracking-wider text-indigo-600 font-bold">
               Asset Intelligence Data Lineage
             </span>
           </div>
-          <h3 className="text-lg font-bold text-white tracking-tight mt-1">
-            Interactive Operational Flow & Connectivity Graph
+          <h3 className="text-lg font-bold text-slate-900 tracking-tight mt-1">
+            Interactive Operational Flow & Lineage Graph
           </h3>
-          <p className="text-xs text-slate-400 mt-0.5">
-            Select any node to trace raw SCADA logs through deterministic calculation rules to generative UI responses.
+          <p className="text-xs text-slate-500 mt-0.5">
+            Select any node to trace raw SCADA telemetry through deterministic calculation rules to generative UI responses.
           </p>
         </div>
 
         {/* Legend */}
-        <div className="flex items-center gap-3 text-[11px] font-mono text-slate-400 shrink-0">
+        <div className="flex items-center gap-3 text-[11px] font-mono text-slate-500 shrink-0">
           <span className="flex items-center gap-1.5">
-            <span className="h-2 w-2 rounded-full bg-emerald-400" /> Verified Rule
+            <span className="h-2 w-2 rounded-full bg-emerald-500" /> Verified Rule
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="h-2 w-2 rounded-full bg-amber-400" /> Conflict Check
+            <span className="h-2 w-2 rounded-full bg-amber-500" /> Conflict Check
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="h-2 w-2 rounded-full bg-sky-400" /> Active Flow
+            <span className="h-2 w-2 rounded-full bg-indigo-500" /> Active Lineage
           </span>
         </div>
       </div>
@@ -190,11 +186,11 @@ export const ConnectivityTree: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-6">
         {/* Column 1: Source Inputs */}
         <div className="space-y-3">
-          <div className="flex items-center justify-between text-xs font-semibold text-slate-300 pb-1">
+          <div className="flex items-center justify-between text-xs font-semibold text-slate-700 pb-1">
             <span className="flex items-center gap-1.5">
-              <Database className="h-3.5 w-3.5 text-sky-400" /> 1. Field Records & SCADA
+              <Database className="h-3.5 w-3.5 text-indigo-600" /> 1. Field Records & SCADA
             </span>
-            <span className="text-[10px] font-mono text-slate-500">Source Tier</span>
+            <span className="text-[10px] font-mono text-slate-400">Source Tier</span>
           </div>
           {inputs.map((node) => {
             const isSelected = selectedNodeId === node.id;
@@ -205,21 +201,21 @@ export const ConnectivityTree: React.FC = () => {
                 onClick={() => setSelectedNodeId(node.id)}
                 className={`group cursor-pointer rounded-xl border p-3.5 transition-all ${
                   isSelected
-                    ? 'border-emerald-500/80 bg-emerald-950/40 shadow-lg ring-1 ring-emerald-500/40'
+                    ? 'border-indigo-500 bg-indigo-50/70 shadow-sm ring-1 ring-indigo-400/40'
                     : isConnectedToSelected
-                    ? 'border-sky-500/60 bg-sky-950/30'
-                    : 'border-slate-800/80 bg-slate-900/60 hover:border-slate-700 hover:bg-slate-900/90'
+                    ? 'border-sky-300 bg-sky-50/60'
+                    : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50'
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-white group-hover:text-emerald-300 transition-colors">
+                  <span className="text-xs font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">
                     {node.title}
                   </span>
-                  <span className="rounded-md border border-slate-700 bg-slate-800/80 px-1.5 py-0.5 text-[10px] font-mono text-slate-300">
+                  <span className="rounded-md border border-slate-200 bg-slate-100 px-1.5 py-0.5 text-[10px] font-mono font-medium text-slate-600">
                     {node.badge}
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-400 mt-1.5 line-clamp-2 leading-relaxed">
+                <p className="text-[11px] text-slate-500 mt-1 line-clamp-2 leading-relaxed">
                   {node.detail}
                 </p>
               </div>
@@ -227,40 +223,38 @@ export const ConnectivityTree: React.FC = () => {
           })}
         </div>
 
-        {/* Column 2: Deterministic Calculation Engines */}
+        {/* Column 2: Analytical Engines */}
         <div className="space-y-3">
-          <div className="flex items-center justify-between text-xs font-semibold text-slate-300 pb-1">
+          <div className="flex items-center justify-between text-xs font-semibold text-slate-700 pb-1">
             <span className="flex items-center gap-1.5">
-              <Cpu className="h-3.5 w-3.5 text-emerald-400" /> 2. Deterministic Engines
+              <Cpu className="h-3.5 w-3.5 text-emerald-600" /> 2. Calculation Engines
             </span>
-            <span className="text-[10px] font-mono text-slate-500">Rules Tier</span>
+            <span className="text-[10px] font-mono text-slate-400">Deterministic Tier</span>
           </div>
           {engines.map((node) => {
             const isSelected = selectedNodeId === node.id;
-            const connectedToSelected =
-              selectedNode.connections.includes(node.id) || node.connections.includes(selectedNodeId);
-
+            const isConnectedToSelected = isConnected(node.id, selectedNodeId);
             return (
               <div
                 key={node.id}
                 onClick={() => setSelectedNodeId(node.id)}
                 className={`group cursor-pointer rounded-xl border p-3.5 transition-all ${
                   isSelected
-                    ? 'border-emerald-500/80 bg-emerald-950/40 shadow-lg ring-1 ring-emerald-500/40'
-                    : connectedToSelected
-                    ? 'border-sky-500/60 bg-sky-950/30'
-                    : 'border-slate-800/80 bg-slate-900/60 hover:border-slate-700 hover:bg-slate-900/90'
+                    ? 'border-emerald-500 bg-emerald-50/70 shadow-sm ring-1 ring-emerald-400/40'
+                    : isConnectedToSelected
+                    ? 'border-indigo-300 bg-indigo-50/60'
+                    : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50'
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-white group-hover:text-emerald-300 transition-colors">
+                  <span className="text-xs font-bold text-slate-900 group-hover:text-emerald-700 transition-colors">
                     {node.title}
                   </span>
-                  <span className="rounded-md border border-emerald-800/80 bg-emerald-950/80 px-1.5 py-0.5 text-[10px] font-mono text-emerald-300">
+                  <span className="rounded-md border border-emerald-200 bg-emerald-50 px-1.5 py-0.5 text-[10px] font-mono font-medium text-emerald-700">
                     {node.badge}
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-400 mt-1.5 line-clamp-2 leading-relaxed">
+                <p className="text-[11px] text-slate-500 mt-1 line-clamp-2 leading-relaxed">
                   {node.detail}
                 </p>
               </div>
@@ -268,39 +262,38 @@ export const ConnectivityTree: React.FC = () => {
           })}
         </div>
 
-        {/* Column 3: Generative UI Presentations */}
+        {/* Column 3: Outputs / Generative UI */}
         <div className="space-y-3">
-          <div className="flex items-center justify-between text-xs font-semibold text-slate-300 pb-1">
+          <div className="flex items-center justify-between text-xs font-semibold text-slate-700 pb-1">
             <span className="flex items-center gap-1.5">
-              <Layers className="h-3.5 w-3.5 text-purple-400" /> 3. Generative UI Presentation
+              <Layers className="h-3.5 w-3.5 text-purple-600" /> 3. Generative UI Renderers
             </span>
-            <span className="text-[10px] font-mono text-slate-500">Output Tier</span>
+            <span className="text-[10px] font-mono text-slate-400">Presentation Tier</span>
           </div>
           {outputs.map((node) => {
             const isSelected = selectedNodeId === node.id;
-            const connectedToSelected = selectedNode.connections.includes(node.id);
-
+            const isConnectedToSelected = isConnected(node.id, selectedNodeId);
             return (
               <div
                 key={node.id}
                 onClick={() => setSelectedNodeId(node.id)}
                 className={`group cursor-pointer rounded-xl border p-3.5 transition-all ${
                   isSelected
-                    ? 'border-emerald-500/80 bg-emerald-950/40 shadow-lg ring-1 ring-emerald-500/40'
-                    : connectedToSelected
-                    ? 'border-emerald-500/60 bg-emerald-950/30'
-                    : 'border-slate-800/80 bg-slate-900/60 hover:border-slate-700 hover:bg-slate-900/90'
+                    ? 'border-purple-500 bg-purple-50/70 shadow-sm ring-1 ring-purple-400/40'
+                    : isConnectedToSelected
+                    ? 'border-indigo-300 bg-indigo-50/60'
+                    : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50'
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-white group-hover:text-emerald-300 transition-colors">
+                  <span className="text-xs font-bold text-slate-900 group-hover:text-purple-700 transition-colors">
                     {node.title}
                   </span>
-                  <span className="rounded-md border border-purple-800/80 bg-purple-950/80 px-1.5 py-0.5 text-[10px] font-mono text-purple-300">
+                  <span className="rounded-md border border-purple-200 bg-purple-50 px-1.5 py-0.5 text-[10px] font-mono font-medium text-purple-700">
                     {node.badge}
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-400 mt-1.5 line-clamp-2 leading-relaxed">
+                <p className="text-[11px] text-slate-500 mt-1 line-clamp-2 leading-relaxed">
                   {node.detail}
                 </p>
               </div>
@@ -309,30 +302,18 @@ export const ConnectivityTree: React.FC = () => {
         </div>
       </div>
 
-      {/* Active Lineage Detail Banner */}
-      <div className="mt-6 rounded-xl border border-slate-700/80 bg-slate-950/90 p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-950 border border-emerald-600/60 text-emerald-400">
-            {selectedNode.status === 'warning' ? (
-              <AlertTriangle className="h-5 w-5 text-amber-400" />
-            ) : (
-              <CheckCircle2 className="h-5 w-5 text-emerald-400" />
-            )}
-          </div>
-          <div>
-            <div className="text-xs font-bold text-white flex items-center gap-2">
-              Selected Node: {selectedNode.title}
-              <span className="rounded bg-slate-800 px-1.5 py-0.5 text-[10px] font-mono text-slate-300">
-                Tier: {selectedNode.category.toUpperCase()}
-              </span>
-            </div>
-            <p className="text-xs text-slate-300 mt-0.5">{selectedNode.detail}</p>
-          </div>
+      {/* Detail Inspector Bar at Bottom */}
+      <div className="mt-6 pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+        <div className="flex items-center gap-2">
+          <span className="font-bold text-slate-800">Selected:</span>
+          <span className="font-semibold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-200/60">
+            {selectedNode.title}
+          </span>
+          <span className="text-slate-500 text-[11px]">({selectedNode.detail})</span>
         </div>
 
-        <div className="flex items-center gap-2 text-xs font-mono text-emerald-400 shrink-0">
-          <span>Active Lineage: {selectedNode.connections.length} Branch(es)</span>
-          <ArrowRight className="h-4 w-4" />
+        <div className="text-[11px] font-mono text-emerald-600 font-semibold flex items-center gap-1 shrink-0">
+          <CheckCircle2 className="h-3.5 w-3.5" /> Deterministic Lineage Verified
         </div>
       </div>
     </div>

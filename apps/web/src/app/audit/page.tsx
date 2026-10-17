@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import {
   ShieldAlert,
   Terminal,
@@ -10,6 +11,7 @@ import {
   AlertTriangle,
   Clock,
   Layers,
+  Sparkles,
 } from 'lucide-react';
 import { api } from '@/lib/api';
 import { ConflictNotice } from '@/types/generative-ui';
@@ -41,62 +43,74 @@ export default function AuditPage() {
   }, []);
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
+    <div className="p-8 max-w-7xl mx-auto space-y-8">
       {/* Header */}
-      <div className="border-b border-slate-800 pb-4">
-        <h1 className="text-2xl font-extrabold text-white flex items-center gap-2">
-          <ShieldAlert className="h-6 w-6 text-emerald-400" /> Operational Audit & Conflict Registry
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="border-b border-slate-200 pb-6"
+      >
+        <div className="flex items-center gap-2 mb-1">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase bg-[#FFE4E6] text-[#BE123C]">
+            <ShieldAlert className="h-3 w-3" /> Integrity Verification
+          </span>
+          <span className="text-xs text-slate-400 font-mono">Discrepancy Audit Engine</span>
+        </div>
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+          Operational Audit & Conflict Registry
         </h1>
-        <p className="text-xs text-slate-400 mt-1">
-          Complete system auditability: verifiable ingestion provenance, active data conflicts, and agent tool execution logs
+        <p className="text-xs sm:text-sm text-slate-500 mt-1 font-medium">
+          Verifiable ingestion provenance, active operational contradictions, and deterministic Copilot tool execution traces.
         </p>
-      </div>
+      </motion.div>
 
       {/* Conflict Registry Section */}
-      <div className="rounded-xl border border-amber-900/60 bg-[#0E1626] p-5 shadow-sm space-y-4">
-        <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-          <div className="flex items-center gap-2">
-            <AlertTriangle className="h-5 w-5 text-amber-400" />
+      <div className="glass-panel p-6 rounded-3xl border-amber-200/80 bg-amber-50/30 space-y-6">
+        <div className="flex items-center justify-between border-b border-amber-200/60 pb-4">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-2xl bg-amber-100 flex items-center justify-center text-amber-700 shadow-xs">
+              <AlertTriangle className="h-5 w-5" />
+            </div>
             <div>
-              <h3 className="text-sm font-bold text-white">Active Operational Contradiction Registry</h3>
-              <p className="text-xs text-slate-400">Contested pumper claims, missing regulatory evidence, and directory mismatches</p>
+              <h3 className="text-base font-bold text-slate-900">Active Operational Discrepancy Registry</h3>
+              <p className="text-xs text-slate-500 mt-0.5">Contested pumper reports, missing regulatory notices, and telemetry contradictions</p>
             </div>
           </div>
-          <span className="rounded bg-amber-950 border border-amber-800 px-2 py-0.5 font-mono text-xs text-amber-300 font-bold">
+          <span className="rounded-full bg-amber-100 border border-amber-300 px-3 py-1 font-mono text-xs text-amber-900 font-bold">
             {conflicts.length} Active Discrepancies
           </span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {conflicts.map((conf, idx) => (
             <div
               key={idx}
-              className="rounded-lg border border-amber-800/80 bg-slate-900/60 p-4 space-y-3"
+              className="rounded-2xl border border-amber-200 bg-white p-5 space-y-3 shadow-xs"
             >
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-amber-300">{conf.issue}</span>
-                <span className="font-mono text-[10px] bg-slate-950 px-2 py-0.5 rounded border border-amber-900 text-slate-300">
-                  Target: {conf.target_id}
+                <span className="text-xs font-bold text-amber-900">{conf.issue}</span>
+                <span className="font-mono text-[10px] bg-slate-100 px-2.5 py-0.5 rounded-full border border-slate-200 text-slate-700 font-bold">
+                  {conf.target_id}
                 </span>
               </div>
 
               <div className="space-y-1.5 text-xs">
-                <div className="text-slate-400">
-                  <span className="text-slate-500 font-semibold">Source Record:</span> {conf.primary_source}
+                <div className="text-slate-600 font-medium">
+                  <span className="text-slate-400 font-bold text-[10px] uppercase tracking-wider">Primary Record:</span> {conf.primary_source}
                 </div>
-                <div className="text-amber-200">
-                  <span className="text-amber-400/80 font-semibold">Competing Claim:</span> {conf.competing_source}
+                <div className="text-amber-800 font-semibold">
+                  <span className="text-amber-600 font-bold text-[10px] uppercase tracking-wider">Competing Claim:</span> {conf.competing_source}
                 </div>
               </div>
 
-              <p className="text-xs text-slate-300 leading-relaxed bg-slate-950/80 p-2.5 rounded border border-slate-800">
-                <strong className="text-amber-400 font-medium">Uncertainty Notice: </strong>
+              <p className="text-xs text-slate-700 leading-relaxed bg-slate-50 p-3.5 rounded-xl border border-slate-200 font-mono">
+                <strong className="text-amber-800 font-bold font-sans">Uncertainty Notice: </strong>
                 {conf.uncertainty_explanation}
               </p>
 
               {conf.precedence_rule && (
-                <div className="text-[10px] text-slate-500 font-mono">
-                  Precedence: {conf.precedence_rule}
+                <div className="text-[11px] text-slate-500 font-medium">
+                  <span className="font-bold text-slate-700">Precedence Rule:</span> {conf.precedence_rule}
                 </div>
               )}
             </div>
@@ -107,29 +121,31 @@ export default function AuditPage() {
       {/* Two Column Grid: Ingestion Batches + Tool Traces */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left: Ingestion History */}
-        <div className="rounded-xl border border-slate-800 bg-[#0E1626] p-5 shadow-sm space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div className="glass-panel p-6 rounded-3xl space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-4">
             <div className="flex items-center gap-2">
-              <Database className="h-4 w-4 text-sky-400" />
-              <h3 className="text-sm font-bold text-white">Dataset Ingestion Batches</h3>
+              <Database className="h-4 w-4 text-indigo-600" />
+              <h3 className="text-sm font-bold text-slate-900">Dataset Ingestion Batches</h3>
             </div>
-            <span className="font-mono text-xs text-slate-400">{ingestionJobs.length} batches</span>
+            <span className="font-mono text-xs text-slate-500 font-bold bg-slate-100 px-2.5 py-0.5 rounded-full">
+              {ingestionJobs.length} batches
+            </span>
           </div>
 
-          <div className="space-y-2.5">
+          <div className="space-y-3">
             {ingestionJobs.map((job) => (
-              <div key={job.id} className="rounded-lg border border-slate-800 bg-slate-900/60 p-3 text-xs space-y-1">
+              <div key={job.id} className="rounded-2xl border border-slate-200 bg-white p-4 text-xs space-y-2 shadow-xs">
                 <div className="flex items-center justify-between font-mono">
-                  <span className="font-bold text-sky-400">{job.id}</span>
-                  <span className="text-slate-500 text-[10px]">{job.created_at ? new Date(job.created_at).toLocaleString() : ''}</span>
+                  <span className="font-bold text-indigo-700">{job.id}</span>
+                  <span className="text-slate-400 text-[10px]">{job.created_at ? new Date(job.created_at).toLocaleString() : ''}</span>
                 </div>
-                <div className="text-slate-300 truncate font-mono text-[11px]">{job.filename}</div>
-                <div className="flex items-center gap-3 text-[10px] text-slate-400 font-mono pt-1">
-                  <span className="text-emerald-400">✓ {job.records_imported} imported</span>
-                  <span className={job.records_failed > 0 ? 'text-rose-400' : 'text-slate-500'}>
+                <div className="text-slate-700 truncate font-mono text-[11px] font-semibold">{job.filename}</div>
+                <div className="flex items-center gap-3 text-[10px] text-slate-500 font-mono pt-1">
+                  <span className="text-emerald-700 font-bold">✓ {job.records_imported} imported</span>
+                  <span className={job.records_failed > 0 ? 'text-rose-600 font-bold' : 'text-slate-400'}>
                     ✗ {job.records_failed} failed
                   </span>
-                  <span className="rounded bg-slate-800 px-1.5 py-0.2 uppercase text-slate-300">
+                  <span className="rounded-full bg-slate-100 px-2 py-0.5 uppercase text-slate-700 font-bold">
                     {job.status}
                   </span>
                 </div>
@@ -139,36 +155,38 @@ export default function AuditPage() {
         </div>
 
         {/* Right: Copilot Query Audit Logs */}
-        <div className="rounded-xl border border-slate-800 bg-[#0E1626] p-5 shadow-sm space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div className="glass-panel p-6 rounded-3xl space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-4">
             <div className="flex items-center gap-2">
-              <Terminal className="h-4 w-4 text-emerald-400" />
-              <h3 className="text-sm font-bold text-white">Copilot Tool Audit Traces</h3>
+              <Terminal className="h-4 w-4 text-emerald-600" />
+              <h3 className="text-sm font-bold text-slate-900">Copilot Tool Audit Traces</h3>
             </div>
-            <span className="font-mono text-xs text-slate-400">{auditEvents.length} events</span>
+            <span className="font-mono text-xs text-slate-500 font-bold bg-slate-100 px-2.5 py-0.5 rounded-full">
+              {auditEvents.length} events
+            </span>
           </div>
 
-          <div className="space-y-2.5 max-h-[420px] overflow-y-auto pr-1">
+          <div className="space-y-3 max-h-[420px] overflow-y-auto pr-1">
             {auditEvents.map((ev) => (
-              <div key={ev.id} className="rounded-lg border border-slate-800 bg-slate-900/60 p-3 text-xs space-y-1.5">
+              <div key={ev.id} className="rounded-2xl border border-slate-200 bg-white p-4 text-xs space-y-2 shadow-xs">
                 <div className="flex items-center justify-between font-mono text-[10px]">
-                  <span className="font-bold text-emerald-400">{ev.event_type}</span>
-                  <span className="text-slate-500">{ev.created_at ? new Date(ev.created_at).toLocaleTimeString() : ''}</span>
+                  <span className="font-bold text-emerald-700">{ev.event_type}</span>
+                  <span className="text-slate-400">{ev.created_at ? new Date(ev.created_at).toLocaleTimeString() : ''}</span>
                 </div>
                 {ev.details?.query && (
-                  <div className="text-slate-200 font-medium">&ldquo;{ev.details.query}&rdquo;</div>
+                  <div className="text-slate-900 font-semibold">&ldquo;{ev.details.query}&rdquo;</div>
                 )}
                 {ev.details?.tools_executed && ev.details.tools_executed.length > 0 && (
-                  <div className="flex flex-wrap items-center gap-1 text-[10px] font-mono text-slate-400">
-                    <span>Tools:</span>
+                  <div className="flex flex-wrap items-center gap-1.5 text-[10px] font-mono text-slate-500">
+                    <span className="font-sans font-medium">Tools:</span>
                     {ev.details.tools_executed.map((tName: string, tIdx: number) => (
-                      <span key={tIdx} className="rounded bg-slate-800 border border-slate-700 px-1 text-sky-300">
+                      <span key={tIdx} className="rounded-full bg-slate-100 border border-slate-200 px-2 py-0.5 text-slate-700 font-bold">
                         {tName}
                       </span>
                     ))}
                   </div>
                 )}
-                <div className="text-[10px] text-slate-500 font-mono">
+                <div className="text-[10px] text-slate-400 font-mono">
                   Operator: {ev.user_id || 'anonymous'} • Visual: {ev.details?.visual_type || 'text'}
                 </div>
               </div>

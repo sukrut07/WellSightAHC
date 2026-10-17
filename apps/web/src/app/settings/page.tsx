@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import {
   Settings as SettingsIcon,
   Cpu,
@@ -10,12 +11,13 @@ import {
   RefreshCw,
   Shield,
   Key,
+  Sparkles,
 } from 'lucide-react';
 import { api } from '@/lib/api';
 
 export default function SettingsPage() {
   const [health, setHealth] = useState<any>(null);
-  const [activeUser, setActiveUser] = useState('demo_user_alpha');
+  const [activeUser, setActiveUser] = useState('U-201');
   const [loading, setLoading] = useState(true);
   const [reingesting, setReingesting] = useState(false);
   const [ingestMsg, setIngestMsg] = useState<string | null>(null);
@@ -41,7 +43,6 @@ export default function SettingsPage() {
     setReingesting(true);
     setIngestMsg(null);
     try {
-      // Ingest default data
       await fetch('http://localhost:8000/api/ingestion/load', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -56,112 +57,139 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="p-6 max-w-4xl mx-auto space-y-6">
+    <div className="p-8 max-w-4xl mx-auto space-y-8">
       {/* Header */}
-      <div className="border-b border-slate-800 pb-4">
-        <h1 className="text-2xl font-extrabold text-white flex items-center gap-2">
-          <SettingsIcon className="h-6 w-6 text-emerald-400" /> System Settings & Configuration
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="border-b border-slate-200 pb-6"
+      >
+        <div className="flex items-center gap-2 mb-1">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase bg-[#E0E7FF] text-[#4338CA]">
+            <SettingsIcon className="h-3 w-3" /> System Configuration
+          </span>
+          <span className="text-xs text-slate-400 font-mono">v1.2.0 SCADA Node</span>
+        </div>
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+          System Settings & Environment
         </h1>
-        <p className="text-xs text-slate-400 mt-1">
-          Runtime AI provider status, memory isolation parameters, and dataset ingestion management
+        <p className="text-xs sm:text-sm text-slate-500 mt-1 font-medium">
+          Multi-tenant user persona switching, AI provider configuration, and FlytBase asset dataset management.
         </p>
-      </div>
+      </motion.div>
 
       {/* AI Provider Status Card */}
-      <div className="rounded-xl border border-slate-800 bg-[#0E1626] p-5 space-y-4">
-        <div className="flex items-center gap-2 border-b border-slate-800 pb-3">
-          <Cpu className="h-5 w-5 text-sky-400" />
-          <h3 className="text-sm font-bold text-white">AI Provider Abstraction</h3>
+      <div className="glass-panel p-6 rounded-3xl space-y-4">
+        <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
+          <Cpu className="h-5 w-5 text-indigo-600" />
+          <h3 className="text-sm font-bold text-slate-900">AI Provider Abstraction</h3>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
-          <div className="rounded-lg border border-emerald-800/80 bg-emerald-950/20 p-3.5 space-y-1">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+          <div className="rounded-2xl border border-emerald-200 bg-emerald-50/50 p-4 space-y-2">
             <div className="flex items-center justify-between">
-              <span className="font-semibold text-white">Deterministic Engine</span>
-              <span className="rounded bg-emerald-950 border border-emerald-800 px-1.5 py-0.2 font-mono text-[10px] text-emerald-400">
+              <span className="font-bold text-emerald-950">Deterministic Engine</span>
+              <span className="rounded-full bg-emerald-100 border border-emerald-300 px-2 py-0.5 font-mono text-[10px] font-bold text-emerald-800">
                 ACTIVE
               </span>
             </div>
-            <p className="text-[11px] text-slate-300">
-              Offline, zero-cost, deterministic tool orchestrator executing exact organiser rules.
+            <p className="text-[11px] text-emerald-800 leading-relaxed font-medium">
+              Zero-token deterministic tool orchestrator executing exact physical calculations and challenge rules.
             </p>
           </div>
 
-          <div className="rounded-lg border border-slate-800 bg-slate-900/40 p-3.5 space-y-1">
+          <div className="rounded-2xl border border-slate-200 bg-white p-4 space-y-2 shadow-xs">
             <div className="flex items-center justify-between">
-              <span className="font-semibold text-slate-300">Google Gemini API</span>
-              <span className="rounded bg-slate-800 px-1.5 py-0.2 font-mono text-[10px] text-slate-400">
+              <span className="font-bold text-slate-800">Google Gemini</span>
+              <span className="rounded-full bg-slate-100 px-2 py-0.5 font-mono text-[10px] text-slate-600 font-bold">
                 KEY IN .ENV
               </span>
             </div>
-            <p className="text-[11px] text-slate-400">
-              Enabled when GEMINI_API_KEY is configured. Falls back gracefully when key is absent.
+            <p className="text-[11px] text-slate-500 leading-relaxed font-medium">
+              Gemini 1.5 Pro / Flash multi-turn reasoning with generative UI schema emission.
             </p>
           </div>
 
-          <div className="rounded-lg border border-slate-800 bg-slate-900/40 p-3.5 space-y-1">
+          <div className="rounded-2xl border border-slate-200 bg-white p-4 space-y-2 shadow-xs">
             <div className="flex items-center justify-between">
-              <span className="font-semibold text-slate-300">OpenAI / OpenWeight</span>
-              <span className="rounded bg-slate-800 px-1.5 py-0.2 font-mono text-[10px] text-slate-400">
-                COMPATIBLE
+              <span className="font-bold text-slate-800">OpenAI / OpenWeight</span>
+              <span className="rounded-full bg-slate-100 px-2 py-0.5 font-mono text-[10px] text-slate-600 font-bold">
+                SUPPORTED
               </span>
             </div>
-            <p className="text-[11px] text-slate-400">
-              Supports OpenAI-compatible endpoints via OPENAI_API_KEY environment variable.
+            <p className="text-[11px] text-slate-500 leading-relaxed font-medium">
+              Plug-and-play compatibility with any OpenAI-compliant endpoint or self-hosted LLM.
             </p>
           </div>
         </div>
       </div>
 
       {/* Demo User Switcher Card */}
-      <div className="rounded-xl border border-slate-800 bg-[#0E1626] p-5 space-y-4">
-        <div className="flex items-center gap-2 border-b border-slate-800 pb-3">
-          <Users className="h-5 w-5 text-emerald-400" />
-          <div>
-            <h3 className="text-sm font-bold text-white">Operator Session & Memory Isolation</h3>
-            <p className="text-xs text-slate-400">Switching the user demonstrates strictly isolated private conversational memory</p>
+      <div className="glass-panel p-6 rounded-3xl space-y-5">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+          <div className="flex items-center gap-2">
+            <Users className="h-5 w-5 text-indigo-600" />
+            <div>
+              <h3 className="text-base font-bold text-slate-900">FlytBase Operator Personas & Private Memory</h3>
+              <p className="text-xs text-slate-500 mt-0.5">Switching personas proves conversational memory isolation across users</p>
+            </div>
           </div>
+          <span className="text-xs font-mono font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-full">
+            {activeUser}
+          </span>
         </div>
 
         <div className="space-y-3">
           {[
             {
-              id: 'demo_user_alpha',
-              name: 'Sarah Jenkins',
-              role: 'Lead Operations & Environmental Engineer',
-              dept: 'Production Management',
+              id: 'U-201',
+              name: 'Michael Turner',
+              role: 'Lead Operations Engineer',
+              dept: 'Fleet Intelligence & Area Oversight',
             },
             {
-              id: 'demo_user_beta',
-              name: 'John Davis',
-              role: 'Field Pumper & Route Operator',
-              dept: 'Field Operations Area A',
+              id: 'U-202',
+              name: 'Jessica Reed',
+              role: 'Environmental & Spill Specialist',
+              dept: 'Statutory Compliance 24h',
             },
             {
-              id: 'demo_user_gamma',
-              name: 'Carlos Mendez',
-              role: 'Subsurface Geologist',
-              dept: 'Reservoir Engineering',
+              id: 'U-101',
+              name: 'Tyler Hughes',
+              role: 'Field Pumper Lead',
+              dept: 'Area A Daily Routes',
+            },
+            {
+              id: 'U-102',
+              name: 'Jake Morales',
+              role: 'Route Specialist',
+              dept: 'Area B & C Thermal Guns',
+            },
+            {
+              id: 'U-301',
+              name: 'Laura Simmons',
+              role: 'Compliance Director',
+              dept: 'Regulatory Invariance Division',
             },
           ].map((user) => (
             <div
               key={user.id}
               onClick={() => handleUserChange(user.id)}
-              className={`cursor-pointer rounded-lg border p-3.5 transition-all flex items-center justify-between ${
+              className={`cursor-pointer rounded-2xl border p-4 transition-all flex items-center justify-between shadow-xs ${
                 activeUser === user.id
-                  ? 'border-emerald-500 bg-emerald-950/40 text-white'
-                  : 'border-slate-800 bg-slate-900/60 text-slate-400 hover:border-slate-700'
+                  ? 'border-indigo-500 bg-[#EEF2FF] text-indigo-950'
+                  : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50/80'
               }`}
             >
               <div>
-                <div className="text-xs font-bold text-slate-200">{user.name}</div>
-                <div className="text-[11px] text-slate-400 mt-0.5 font-mono">
-                  User ID: {user.id} • {user.role} ({user.dept})
+                <div className="text-xs font-bold text-slate-900">{user.name}</div>
+                <div className="text-[11px] text-slate-500 mt-0.5 font-medium">
+                  ID: <span className="font-mono font-bold text-indigo-600">{user.id}</span> • {user.role} ({user.dept})
                 </div>
               </div>
               {activeUser === user.id && (
-                <span className="flex items-center gap-1 rounded bg-emerald-900/60 border border-emerald-800 px-2 py-0.5 text-[10px] font-semibold text-emerald-300">
-                  <CheckCircle2 className="h-3 w-3" /> Active User
+                <span className="flex items-center gap-1.5 rounded-full bg-indigo-100 border border-indigo-200 px-3 py-1 text-[11px] font-bold text-indigo-800">
+                  <CheckCircle2 className="h-3.5 w-3.5 text-indigo-600" /> Active Session
                 </span>
               )}
             </div>
@@ -170,16 +198,16 @@ export default function SettingsPage() {
       </div>
 
       {/* Dataset & Ingestion Management */}
-      <div className="rounded-xl border border-slate-800 bg-[#0E1626] p-5 space-y-4">
-        <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+      <div className="glass-panel p-6 rounded-3xl space-y-4">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-4">
           <div className="flex items-center gap-2">
-            <Database className="h-5 w-5 text-sky-400" />
-            <h3 className="text-sm font-bold text-white">Dataset Ingestion Pipeline</h3>
+            <Database className="h-5 w-5 text-indigo-600" />
+            <h3 className="text-sm font-bold text-slate-900">Dataset Ingestion Pipeline</h3>
           </div>
           <button
             onClick={handleReingest}
             disabled={reingesting}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800 px-3 py-1.5 text-xs font-medium text-slate-200 hover:text-white disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded-full bg-[#111625] hover:bg-slate-800 px-4 py-2 text-xs font-bold text-white shadow-sm disabled:opacity-50 transition-all"
           >
             <RefreshCw className={`h-3.5 w-3.5 ${reingesting ? 'animate-spin' : ''}`} />
             {reingesting ? 'Ingesting...' : 'Re-Ingest Dataset'}
@@ -187,15 +215,15 @@ export default function SettingsPage() {
         </div>
 
         {ingestMsg && (
-          <div className="rounded bg-emerald-950/60 border border-emerald-800 p-2.5 text-xs text-emerald-300 font-mono">
+          <div className="rounded-xl bg-emerald-50 border border-emerald-200 p-3 text-xs text-emerald-800 font-mono font-medium">
             {ingestMsg}
           </div>
         )}
 
-        <div className="text-xs text-slate-400 space-y-2">
-          <p>You can also load the late-release test dataset from the terminal at any time using:</p>
-          <div className="rounded bg-slate-950 border border-slate-800 p-3 font-mono text-emerald-400 text-[11px]">
-            PYTHONPATH=services/api .venv/bin/python3 -m app.ingestion.cli load ./data/test_dataset
+        <div className="text-xs text-slate-500 space-y-2 font-medium">
+          <p>Load the official challenge asset directory from the terminal at any time using:</p>
+          <div className="rounded-xl bg-[#111625] p-3 font-mono text-emerald-400 text-[11px] shadow-xs">
+            PYTHONPATH=services/api .venv/bin/python3 -m app.ingestion.cli load ./data
           </div>
         </div>
       </div>

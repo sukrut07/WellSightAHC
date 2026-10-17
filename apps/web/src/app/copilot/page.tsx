@@ -183,7 +183,7 @@ function CopilotChatContent() {
               setMessages(messages.slice(0, 1));
               setConversationId(null);
             }}
-            className="inline-flex items-center gap-1 rounded-lg border border-slate-800 bg-slate-900 px-2.5 py-1.5 text-xs text-slate-400 hover:text-white transition-colors"
+            className="inline-flex items-center gap-1 rounded-xl border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 shadow-xs transition-colors cursor-pointer"
             title="Reset conversation"
           >
             <RotateCcw className="h-3.5 w-3.5" />
@@ -200,25 +200,25 @@ function CopilotChatContent() {
               className={`flex gap-3 ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               {m.role === 'assistant' && (
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-emerald-950 border border-emerald-800 text-emerald-400">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-emerald-500 text-white shadow-sm">
                   <Bot className="h-4 w-4" />
                 </div>
               )}
 
               <div
-                className={`max-w-3xl rounded-2xl p-4.5 text-xs leading-relaxed shadow-md ${
+                className={`max-w-3xl rounded-2xl p-4.5 text-xs leading-relaxed shadow-sm ${
                   m.role === 'user'
-                    ? 'bg-emerald-900/60 border border-emerald-700 text-white rounded-tr-none'
-                    : 'bg-[#0E1626] border border-slate-800/90 text-slate-200 rounded-tl-none'
+                    ? 'bg-slate-900 text-white rounded-tr-none'
+                    : 'bg-white/90 border border-slate-200/90 text-slate-800 rounded-tl-none backdrop-blur-xl shadow-md'
                 }`}
               >
                 {/* Assistant Tools Execution Badge */}
                 {m.tool_calls && m.tool_calls.length > 0 && (
-                  <div className="mb-3 flex flex-wrap items-center gap-2 rounded-md bg-slate-900/90 border border-slate-800 px-2.5 py-1.5 text-[11px] font-mono text-slate-400">
-                    <Terminal className="h-3.5 w-3.5 text-sky-400" />
-                    <span>Executed Tools:</span>
+                  <div className="mb-3 flex flex-wrap items-center gap-2 rounded-lg bg-slate-50 border border-slate-200 px-2.5 py-1.5 text-[11px] font-mono text-slate-600">
+                    <Terminal className="h-3.5 w-3.5 text-indigo-600" />
+                    <span className="font-semibold">Executed Tools:</span>
                     {m.tool_calls.map((t: any, idx: number) => (
-                      <span key={idx} className="rounded bg-slate-800 px-1.5 py-0.5 text-emerald-300 font-bold">
+                      <span key={idx} className="rounded bg-indigo-50 border border-indigo-200 px-1.5 py-0.5 text-indigo-700 font-bold">
                         {t.tool_name} ({t.execution_time_ms ? `${Math.round(t.execution_time_ms)}ms` : 'ok'})
                       </span>
                     ))}
@@ -226,7 +226,7 @@ function CopilotChatContent() {
                 )}
 
                 {/* Markdown Text Response */}
-                <div className="prose prose-invert prose-xs max-w-none space-y-2">
+                <div className="prose prose-slate prose-xs max-w-none space-y-2 text-slate-700">
                   <ReactMarkdown>{m.content}</ReactMarkdown>
                 </div>
 
@@ -320,7 +320,7 @@ function CopilotChatContent() {
               <button
                 key={idx}
                 onClick={() => handleSendMessage(q)}
-                className="shrink-0 rounded-full border border-slate-800 bg-slate-900/80 px-3 py-1 text-[11px] text-slate-300 hover:border-emerald-700 hover:bg-slate-800 hover:text-white transition-all shadow-xs"
+                className="shrink-0 rounded-xl border border-slate-200 bg-white/90 px-3 py-1.5 text-[11px] font-semibold text-slate-700 hover:border-indigo-300 hover:bg-indigo-50/50 hover:text-indigo-700 transition-all shadow-xs cursor-pointer"
               >
                 {q}
               </button>
@@ -340,12 +340,12 @@ function CopilotChatContent() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Ask about well downtime, 24h spill rules, temperature deltas, repairs, or submit corrections..."
-              className="flex-1 rounded-xl border border-slate-700 bg-slate-900/90 px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500/50 shadow-inner"
+              className="flex-1 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/10 shadow-sm"
             />
             <button
               type="submit"
               disabled={loading || !input.trim()}
-              className="flex items-center justify-center rounded-xl bg-emerald-600 hover:bg-emerald-500 px-4 py-2.5 text-xs font-bold text-white shadow-md disabled:opacity-50 transition-colors"
+              className="flex items-center justify-center rounded-xl bg-indigo-600 hover:bg-indigo-700 px-4 py-2.5 text-xs font-bold text-white shadow-md shadow-indigo-500/20 disabled:opacity-50 transition-colors cursor-pointer"
             >
               <Send className="h-4 w-4" />
             </button>
