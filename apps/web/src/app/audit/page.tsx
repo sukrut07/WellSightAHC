@@ -156,7 +156,7 @@ export default function AuditPage() {
                   <span className="text-slate-500">{ev.created_at ? new Date(ev.created_at).toLocaleTimeString() : ''}</span>
                 </div>
                 {ev.details?.query && (
-                  <div className="text-slate-200 font-medium">"{ev.details.query}"</div>
+                  <div className="text-slate-200 font-medium">&ldquo;{ev.details.query}&rdquo;</div>
                 )}
                 {ev.details?.tools_executed && ev.details.tools_executed.length > 0 && (
                   <div className="flex flex-wrap items-center gap-1 text-[10px] font-mono text-slate-400">

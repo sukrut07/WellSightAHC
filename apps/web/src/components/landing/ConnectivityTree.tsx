@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Database, Cpu, FileCheck2, ShieldCheck, Zap, ArrowRight, CheckCircle2, AlertTriangle, Layers } from 'lucide-react';
+import { Database, Cpu, ArrowRight, CheckCircle2, AlertTriangle, Layers } from 'lucide-react';
 
 interface NodeItem {
   id: string;
@@ -198,6 +198,7 @@ export const ConnectivityTree: React.FC = () => {
           </div>
           {inputs.map((node) => {
             const isSelected = selectedNodeId === node.id;
+            const isConnectedToSelected = isConnected(node.id, selectedNodeId);
             return (
               <div
                 key={node.id}
@@ -205,6 +206,8 @@ export const ConnectivityTree: React.FC = () => {
                 className={`group cursor-pointer rounded-xl border p-3.5 transition-all ${
                   isSelected
                     ? 'border-emerald-500/80 bg-emerald-950/40 shadow-lg ring-1 ring-emerald-500/40'
+                    : isConnectedToSelected
+                    ? 'border-sky-500/60 bg-sky-950/30'
                     : 'border-slate-800/80 bg-slate-900/60 hover:border-slate-700 hover:bg-slate-900/90'
                 }`}
               >

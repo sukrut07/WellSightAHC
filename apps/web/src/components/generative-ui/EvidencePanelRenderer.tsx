@@ -33,7 +33,7 @@ export const EvidencePanelRenderer: React.FC<EvidencePanelRendererProps> = ({ sp
             </div>
 
             <div className="mt-2 text-xs text-slate-300 bg-slate-950/80 p-2.5 rounded border border-slate-800/80 font-mono text-[11px] leading-relaxed">
-              "{cite.excerpt}"
+              &ldquo;{cite.excerpt}&rdquo;
             </div>
 
             <div className="mt-2 flex flex-wrap items-center gap-3 text-[10px] text-slate-500 font-mono">

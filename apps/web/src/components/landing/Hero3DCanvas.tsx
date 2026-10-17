@@ -230,11 +230,10 @@ export const Hero3DCanvas: React.FC = () => {
 
     // Animation Loop
     let animationFrameId: number;
-    let clock = new THREE.Clock();
+    const clock = new THREE.Clock();
 
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
-      const delta = clock.getDelta();
       const elapsedTime = clock.getElapsedTime();
 
       if (!prefersReducedMotion) {

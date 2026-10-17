@@ -69,13 +69,6 @@ function CopilotChatContent() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, loading]);
 
-  // Handle URL query parameter launch
-  useEffect(() => {
-    if (initialQuery && messages.length === 1) {
-      handleSendMessage(initialQuery);
-    }
-  }, [initialQuery]);
-
   const handleSendMessage = async (textToSend?: string) => {
     const text = (textToSend || input).trim();
     if (!text || loading) return;
@@ -125,6 +118,13 @@ function CopilotChatContent() {
       setLoading(false);
     }
   };
+
+  // Handle URL query parameter launch
+  useEffect(() => {
+    if (initialQuery && messages.length === 1) {
+      handleSendMessage(initialQuery);
+    }
+  }, [initialQuery]);
 
   const handleCitationClick = (recId: string) => {
     setSelectedCitationId(recId);

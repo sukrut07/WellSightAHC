@@ -138,7 +138,7 @@ export default function EvidencePage() {
             <div className="space-y-4">
               <div className="flex items-center justify-between border-b border-slate-800 pb-3">
                 <h3 className="text-sm font-bold text-emerald-400">
-                  Search Results for "{searchQuery}" ({searchResults.length} excerpts found)
+                  Search Results for &quot;{searchQuery}&quot; ({searchResults.length} excerpts found)
                 </h3>
                 <button
                   onClick={() => setSearchResults([])}
@@ -158,7 +158,7 @@ export default function EvidencePage() {
                       </span>
                     </div>
                     <p className="text-xs text-slate-300 leading-relaxed font-mono bg-slate-950/60 p-3 rounded border border-slate-800/80">
-                      "{res.excerpt}"
+                      &ldquo;{res.excerpt}&rdquo;
                     </p>
                     <div className="text-[10px] text-slate-500 font-mono">
                       Category: {res.source_type} • Section: {res.section_title || '-'}
