@@ -373,7 +373,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── ABOUT / PROBLEM STATEMENT ──────────────────────── */}
-      <section id="about" className="py-24 bg-white border-b border-slate-100">
+      <section id="about" className="py-24 bg-white border-b border-slate-100 scroll-mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
             {/* Problem */}
@@ -466,7 +466,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── HOW IT WORKS / ARCHITECTURE ───────────────────── */}
-      <section id="how-it-works" className="py-24 bg-[#F8FAFC] border-b border-slate-200/80">
+      <section id="how-it-works" className="py-24 bg-[#F8FAFC] border-b border-slate-200/80 scroll-mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
 
           <motion.div
@@ -592,7 +592,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── CAPABILITIES ─────────────────────────────────── */}
-      <section id="features" className="py-24 bg-white border-b border-slate-100">
+      <section id="features" className="py-24 bg-white border-b border-slate-100 scroll-mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -713,7 +713,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── LIVE DEMO PREVIEW ─────────────────────────────── */}
-      <section id="demo" className="py-24 bg-[#F8FAFC] border-b border-slate-200">
+      <section id="demo" className="py-24 bg-[#F8FAFC] border-b border-slate-200 scroll-mt-16">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -864,7 +864,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── DATA FLOW / LINEAGE ───────────────────────────── */}
-      <section id="lineage" className="py-24 bg-gradient-to-br from-slate-950 to-[#0F1729] text-white">
+      <section id="lineage" className="py-24 bg-gradient-to-br from-slate-950 to-[#0F1729] text-white scroll-mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -949,7 +949,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── TECH STACK ───────────────────────────────────── */}
-      <section id="tech" className="py-24 bg-white border-b border-slate-100">
+      <section id="tech" className="py-24 bg-white border-b border-slate-100 scroll-mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
