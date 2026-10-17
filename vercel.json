@@ -15,10 +15,17 @@
     },
     "api": {
       "root": "services/api",
-      "framework": "fastapi"
+      "framework": "fastapi",
+      "entrypoint": "main:app"
     }
   },
   "rewrites": [
+    {
+      "source": "/api",
+      "destination": {
+        "service": "api"
+      }
+    },
     {
       "source": "/api/(.*)",
       "destination": {

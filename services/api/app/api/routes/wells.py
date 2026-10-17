@@ -22,13 +22,28 @@ def list_wells(
     db: Session = Depends(get_db)
 ):
     query = db.query(Well)
-    if area:
-        query = query.filter(Well.area == area)
-    if well_type:
-        query = query.filter(Well.well_type == well_type)
-    if status:
-        query = query.filter(Well.status == status)
-    if search:
+    if area and isinstance(area, str):
+        AREA_ALIASES = {
+            "area a": "Southwest Block 23",
+            "area-a": "Southwest Block 23",
+            "area_a": "Southwest Block 23",
+            "area b": "Southwest Block 24",
+            "area-b": "Southwest Block 24",
+            "area_b": "Southwest Block 24",
+            "area c": "Northeast Block 7",
+            "area-c": "Northeast Block 7",
+            "area_c": "Northeast Block 7",
+            "area d": "Northeast Block 8",
+            "area-d": "Northeast Block 8",
+            "area_d": "Northeast Block 8",
+        }
+        target_area = AREA_ALIASES.get(area.strip().lower(), area)
+        query = query.filter(Well.area.ilike(f"%{target_area}%"))
+    if well_type and isinstance(well_type, str):
+        query = query.filter(Well.well_type.ilike(f"%{well_type}%"))
+    if status and isinstance(status, str):
+        query = query.filter(Well.status.ilike(f"%{status}%"))
+    if search and isinstance(search, str):
         s = f"%{search}%"
         query = query.filter((Well.name.ilike(s)) | (Well.id.ilike(s)))
 

@@ -23,6 +23,12 @@ DEFAULT_TEMP_THRESHOLDS: Dict[str, float] = {
 }
 
 class DowntimeEngine:
+    _cache: Dict[str, Any] = {}
+
+    @classmethod
+    def clear_cache(cls):
+        cls._cache.clear()
+
     @staticmethod
     def get_effective_threshold(db: Session, well_type: str) -> float:
         """Retrieves operating thermal threshold for well type, applying any accepted well_type corrections."""
@@ -129,6 +135,10 @@ class DowntimeEngine:
                 "downtime_hours": 0.0
             }
 
+        cache_key = f"{well_id}:{start_date}:{end_date}"
+        if cache_key in cls._cache:
+            return cls._cache[cache_key]
+
         threshold = cls.get_effective_threshold(db, well.well_type)
 
         query = db.query(Inspection).filter(Inspection.well_id == well_id)
@@ -189,7 +199,7 @@ class DowntimeEngine:
             for r in repairs
         ]
 
-        return {
+        res = {
             "well_id": well.id,
             "well_name": well.name,
             "area": well.area,
@@ -208,6 +218,8 @@ class DowntimeEngine:
             "warnings": list(set(all_warnings)),
             "methodology": "Weekly non-producing inspection accounts for 7 days (168h); consecutive non-producing counts 14 days (336h); missed inspections account for 0 days."
         }
+        cls._cache[cache_key] = res
+        return res
 
     @classmethod
     def calculate_area_downtime(

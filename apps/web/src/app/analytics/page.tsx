@@ -98,19 +98,26 @@ export default function AnalyticsPage() {
 
       {/* Area Selector Filter */}
       <div className="flex items-center justify-between flex-wrap gap-4 glass-panel p-4 rounded-2xl">
-        <div className="flex items-center gap-2 text-xs">
+        <div className="flex items-center gap-2 text-xs flex-wrap">
           <span className="text-slate-500 font-bold uppercase tracking-wider text-[11px]">Production Sector:</span>
-          {['Area A', 'Area B', 'Area C'].map((area) => (
+          {[
+            { id: 'Area A', label: 'Area A (SW-23)' },
+            { id: 'Area B', label: 'Area B (SW-24)' },
+            { id: 'Area C', label: 'Area C (NE-7)' },
+            { id: 'Area D', label: 'Area D (NE-8)' },
+            { id: 'Northwest Block 12', label: 'NW Block 12' },
+            { id: 'Southeast Block 31', label: 'SE Block 31' },
+          ].map((sec) => (
             <button
-              key={area}
-              onClick={() => setSelectedArea(area)}
-              className={`rounded-full px-4 py-1.5 font-bold text-xs transition-all ${
-                selectedArea === area
+              key={sec.id}
+              onClick={() => setSelectedArea(sec.id)}
+              className={`rounded-full px-3.5 py-1.5 font-bold text-xs transition-all ${
+                selectedArea === sec.id
                   ? 'bg-[#111625] text-white shadow-sm'
                   : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
               }`}
             >
-              {area}
+              {sec.label}
             </button>
           ))}
         </div>

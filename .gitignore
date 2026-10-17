@@ -37,6 +37,7 @@ yarn-error.log*
 *.db
 *.sqlite3
 wellsight.db
+!services/api/wellsight.db.gz
 
 # Environment variables
 .env

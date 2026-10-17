@@ -158,13 +158,30 @@ class ToolRegistry:
         """Tool 6: Calculate total and categorized repair costs."""
         query = db.query(Repair).join(Well)
         if area:
-            query = query.filter(Well.area == area)
+            norm_area = area.strip().lower()
+            AREA_ALIASES = {
+                "area a": "Southwest Block 23",
+                "area-a": "Southwest Block 23",
+                "area_a": "Southwest Block 23",
+                "area b": "Southwest Block 24",
+                "area-b": "Southwest Block 24",
+                "area_b": "Southwest Block 24",
+                "area c": "Northeast Block 7",
+                "area-c": "Northeast Block 7",
+                "area_c": "Northeast Block 7",
+                "area d": "Northeast Block 8",
+                "area-d": "Northeast Block 8",
+                "area_d": "Northeast Block 8",
+            }
+            target_area = AREA_ALIASES.get(norm_area, area)
+            query = query.filter(Well.area.ilike(f"%{target_area}%"))
         repairs = query.all()
 
         total_cost = sum(r.cost_usd for r in repairs)
         by_category: Dict[str, float] = {}
         for r in repairs:
-            by_category[r.cause_category] = by_category.get(r.cause_category, 0.0) + r.cost_usd
+            cat = r.cause_category or "Uncategorized"
+            by_category[cat] = by_category.get(cat, 0.0) + r.cost_usd
 
         return {
             "area": area or "All Areas",
